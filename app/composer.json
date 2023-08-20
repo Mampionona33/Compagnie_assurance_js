@@ -1,0 +1,27 @@
+{
+  "name": "mampionona/app",
+  "description": "Application de pour la compagnie d'assurance pour la géstion des assurés",
+  "autoload": {
+    "psr-4": {
+      "App\\": "",
+      "VendorNamespace\\": "vendor/",
+      "Controller\\": "controller/",
+      "Lib\\": "lib/",
+      "Entity\\": "entity/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Mampionona33",
+      "email": "ramamps33@gmail.com"
+    }
+  ],
+  "require": {
+    "twig/twig": "^3.6",
+    "coffeecode/router": "2.0.*",
+    "doctrine/orm": "^2.11.0",
+    "doctrine/dbal": "^3.2",
+    "symfony/yaml": "^5.4",
+    "symfony/cache": "^5.4"
+  }
+}
