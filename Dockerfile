@@ -20,7 +20,7 @@ RUN a2enmod rewrite
 RUN docker-php-ext-install pdo_mysql
 
 # Install msqli
-RUN docker-php-ext-install mysqli
+# RUN docker-php-ext-install mysqli
 
 # Expose port 80
 EXPOSE 80
