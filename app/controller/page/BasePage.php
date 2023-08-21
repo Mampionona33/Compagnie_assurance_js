@@ -1,5 +1,7 @@
 <?php
 
+namespace Controller\page;
+
 use Lib\TwigEnvironement;
 use Twig\Environment;
 

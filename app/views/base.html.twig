@@ -16,12 +16,11 @@
 		</header>
 
 		{# navbar #}
-		{% include "./components/navbar.html.twig" %}
+		{# {% include "./components/navbar.html.twig" %} #}
 		{# sidebar #}
-		{% include './components/sidebar.html.twig' %}
+		{# {% include './components/sidebar.html.twig' %} #}
 
-		<main class="container-sm d-flex justify-content-center vw-100">
-			<div class="position-absolute top-50 start-50 translate-middle"> {% block content %}{% endblock %}
+			<main class="container-sm d-flex justify-content-center vw-100"> <div class="position-absolute top-50 start-50 translate-middle"> {% block content %}{% endblock %}
 				</div>
 			</main>
 

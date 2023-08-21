@@ -88,8 +88,14 @@ final class index
 
     private function handleError(): void
     {
-        $this->router->group("error")->namespace("Controller\page");
-        $this->router->get("/errcode", "NotFoundController:notFound");
+        $this->router->group("error")->namespace('Controller\page');
+        $this->router->get("/{errcode}", "NotFoundController:notFound");
+    }
+
+    private function handleHomePage(): void
+    {
+        $this->router->namespace("Controller\page");
+        $this->router->get("/", "HomePageController:render");
     }
 
     private function redirectOnError(): void
@@ -99,17 +105,15 @@ final class index
         }
     }
 
-    private function handleHomePage(): void
-    {
-        $this->router->namespace("Controller\page");
-        $this->router->get("/", "HomePageController:render");
-    }
-
     public function __invoke(): void
     {
-        $this->handleError();
         $this->handleHomePage();
+
+        $this->handleError();
+
+
         $this->setResponse($this->router->dispatch());
+
         $this->redirectOnError();
     }
 }
