@@ -1,3 +1,4 @@
+# Utilisez une image basée sur php avec Apache plus légère
 FROM php:8.1-apache-bullseye
 
 # Installez les packages nécessaires
@@ -13,8 +14,16 @@ RUN curl -L -o phpmyadmin.tar.gz https://files.phpmyadmin.net/phpMyAdmin/$PHPMYA
     && tar -xzf phpmyadmin.tar.gz -C /var/www/html --strip-components=1 \
     && rm phpmyadmin.tar.gz
 
-RUN mkdir -p /var/log/apache2 && chown -R www-data:www-data /var/log/apache2
-
+# Set phpMyAdmin configuration
+RUN { \
+    echo '<?php'; \
+    echo '$_ENV["PMA_HOST"] = "mysql";'; \
+    echo '$_ENV["PMA_PORT"] = "3306";'; \
+    echo '$_ENV["PMA_USER"] = "root";'; \
+    echo '$_ENV["PMA_PASSWORD"] = "password";'; \
+    echo '$_ENV["PMA_AUTH_TYPE"] = "config";'; \
+    echo '$_ENV["PMA_ABSOLUTE_URI"] = "/phpmyadmin/";'; \
+    } > /var/www/html/config.inc.php
 
 # Enable mod_rewrite
 RUN a2enmod rewrite
@@ -23,10 +32,10 @@ RUN a2enmod rewrite
 RUN docker-php-ext-install pdo_mysql
 
 # Install msqli
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+RUN docker-php-ext-install mysqli
 
 # Expose port 80
 EXPOSE 80
 
 # Start Apache server
-# CMD ["apache2-foreground"]
+CMD ["apache2-foreground"]
