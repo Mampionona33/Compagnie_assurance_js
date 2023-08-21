@@ -13,6 +13,9 @@ RUN curl -L -o phpmyadmin.tar.gz https://files.phpmyadmin.net/phpMyAdmin/$PHPMYA
     && tar -xzf phpmyadmin.tar.gz -C /var/www/html --strip-components=1 \
     && rm phpmyadmin.tar.gz
 
+RUN mkdir -p /var/log/apache2 && chown -R www-data:www-data /var/log/apache2
+
+
 # Enable mod_rewrite
 RUN a2enmod rewrite
 
@@ -20,10 +23,10 @@ RUN a2enmod rewrite
 RUN docker-php-ext-install pdo_mysql
 
 # Install msqli
-# RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
 # Expose port 80
 EXPOSE 80
 
 # Start Apache server
-CMD ["apache2-foreground"]
+# CMD ["apache2-foreground"]

@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  apache:
+  compagnie_assurance_js-apache-1:  # Utilisez le nom correct du conteneur Apache
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,16 +10,7 @@ services:
     volumes:
       - ./app:/var/www/html/app
       - ./apache-config.conf:/etc/apache2/conf-enabled/apache-config.conf:ro
-      - /etc/passwd:/etc/passwd:ro
-      - /etc/group:/etc/group:ro
-      - /etc/shadow:/etc/shadow:ro
-      - /etc/sudoers.d:/etc/sudoers.d:ro
-      - /home:/home
-      - /tmp:/tmp
-      - /run/user/$UID:/run/user/$UID
-      - /var/tmp:/var/tmp
-      - /var/lib/php/sessions:/var/lib/php/sessions
-    user: $UID
+    command: ["apache2-foreground"]
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
