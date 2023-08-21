@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  compagnie_assurance_js-apache-1:  # Utilisez le nom correct du conteneur Apache
+  main_app: 
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,7 +10,11 @@ services:
     volumes:
       - ./app:/var/www/html/app
       - ./apache-config.conf:/etc/apache2/conf-enabled/apache-config.conf:ro
-    command: ["apache2-foreground"]
+    command: 
+      - /bin/bash
+      - -c
+      - |
+        apache2-foreground
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
