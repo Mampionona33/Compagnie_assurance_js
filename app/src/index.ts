@@ -1,6 +1,7 @@
 import * as bootstrap from "bootstrap";
 import { Table } from "./ts/components/Table";
 import { CustomModal } from "./ts/components/CustomModal";
+import { FormAjoutConducteur } from "./ts/components/FormAjoutConducteur";
 
 console.log("Hello World!");
 
@@ -40,6 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
   modalAddConductorContainer.classList.add("modal");
 
   const modalAddContent = new CustomModal("Ajout conducteur");
+  const formAjoutConducteur = new FormAjoutConducteur();
+  modalAddContent.setBody(formAjoutConducteur.render());
   modalAddConductorContainer.innerHTML = modalAddContent.render();
 
   if (root) {

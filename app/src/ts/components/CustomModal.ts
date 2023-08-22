@@ -1,6 +1,6 @@
 export class CustomModal {
   title: string;
-  body?: Element;
+  body?: string;
 
   constructor(title: string) {
     this.title = title;
@@ -10,7 +10,7 @@ export class CustomModal {
     this.title = title;
   }
 
-  setBody(body: Element): void {
+  setBody(body: string): void {
     this.body = body;
   }
 
