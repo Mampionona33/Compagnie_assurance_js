@@ -16,6 +16,7 @@ table.setHeader([
   "nombre d'accident",
   "tarif",
 ]);
+
 const showModal = (modalEl: HTMLElement) => {
   const modal = new bootstrap.Modal(modalEl, {
     backdrop: true,
