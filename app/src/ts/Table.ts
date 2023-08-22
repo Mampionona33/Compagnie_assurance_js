@@ -3,10 +3,14 @@ export class Table {
 
   handleClickBtnAdd():void{
     const btnAdd = document.querySelector("#table-btn-add");
+    const root = document.querySelector("#root");
     if(btnAdd){
       btnAdd.addEventListener("click",(ev)=>{
         ev.preventDefault();
-        alert("test");
+        const node = document.createElement("div");
+        const textNode = document.createTextNode("text");
+        node.appendChild(textNode);
+        root.appendChild(node);
       })
     }
   }
