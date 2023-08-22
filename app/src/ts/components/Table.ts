@@ -1,28 +1,20 @@
+import { CustomModal } from "./CustomModal";
+
 export class Table {
   header: Array<string> = [];
-
-  handleClickBtnAdd():void{
-    const btnAdd = document.querySelector("#table-btn-add");
-    const root = document.querySelector("#root");
-    if(btnAdd){
-      btnAdd.addEventListener("click",(ev)=>{
-        ev.preventDefault();
-        const node = document.createElement("div");
-        const textNode = document.createTextNode("text");
-        node.appendChild(textNode);
-        root.appendChild(node);
-      })
-    }
-  }
-
-  constructor() {
-    this.header = [];
-  }
+  modalAdd: CustomModal;
 
   setHeader(header: Array<string>): void {
     this.header = header;
   }
 
+  setModalAdd(modalAdd: CustomModal): void {
+    this.modalAdd = modalAdd;
+  }
+
+  getModalAdd(): CustomModal {
+    return this.modalAdd;
+  }
   getHeader(): Array<string> {
     return this.header;
   }
@@ -34,14 +26,12 @@ export class Table {
     return `<tr>${formattedHeader}</tr>`;
   }
 
- 
-
   render(): string {
     const headerRow = this.formatHeader();
     return `
     <div class="container">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <button type="button" id="table-btn-add" class="btn btn-primary d-flex gap-1">
+        <button type="button" id="table-btn-add" class="btn btn-primary d-flex gap-1" data-bs-toggle="modal" data-bs-target="#modal">
           <span class="material-icons-outlined">
               add_circle_outline
           </span>
@@ -50,7 +40,7 @@ export class Table {
       </div>
       <div class="table-responsive">
         <table class="table table-bordered table-striped shadow-sm">
-          <thead class="text-capitalize table-dark">
+          <thead class="text-capitalize table-dark align-top">
             ${headerRow}
           </thead>
           <tbody>
