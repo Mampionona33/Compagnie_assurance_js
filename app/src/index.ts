@@ -11,4 +11,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (root) {
     root.innerHTML = table.render();
   }
+
+  const btnAdd =  document.querySelector("#table-btn-add");
+  if(btnAdd){
+    table.handleClickBtnAdd();
+  }
+  
 });
