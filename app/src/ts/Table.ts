@@ -15,7 +15,7 @@ export class Table {
 
   formatHeader(): string {
     const formattedHeader = this.header
-      .map((column) => `<th>${column}</th>`)
+      .map((column) => `<th scope="col">${column}</th>`)
       .join("");
     return `<tr>${formattedHeader}</tr>`;
   }
@@ -23,14 +23,33 @@ export class Table {
   render(): string {
     const headerRow = this.formatHeader();
     return `
-      <table>
-        <thead>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped shadow-sm">
+        <thead class="text-capitalize table-dark">
           ${headerRow}
         </thead>
         <tbody>
-          <!-- TODO: Ajouter les lignes de données ici -->
+        <tr>
+          <th scope="row">1</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td>
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Jacob</td>
+          <td>Thornton</td>
+          <td>@fat</td>
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td>Larry</td>
+          <td>the Bird</td>
+          <td>@twitter</td>
+        </tr>
         </tbody>
       </table>
+    </div>
     `;
   }
 }
