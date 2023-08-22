@@ -8,6 +8,8 @@ RUN apt-get update \
 # Enable mod_rewrite
 RUN a2enmod rewrite
 
+COPY ./app /var/www/html
+
 # Install PDO
 RUN docker-php-ext-install pdo_mysql
 
