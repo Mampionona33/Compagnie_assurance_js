@@ -29,24 +29,16 @@ export class Table {
           ${headerRow}
         </thead>
         <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Larry</td>
-          <td>the Bird</td>
-          <td>@twitter</td>
-        </tr>
+          <tr>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>22/05/1989</td>
+            <td>34</td>
+            <td>2015</td>
+            <td>2015</td>
+            <td> <input name="nbAccident" type="text" value=0 style="border:none; background-color:transparent; outline:none"/></td>
+            <td>vert</td>
+          </tr>
         </tbody>
       </table>
     </div>
