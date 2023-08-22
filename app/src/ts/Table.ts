@@ -36,7 +36,7 @@ export class Table {
             <td>34</td>
             <td>2015</td>
             <td>2015</td>
-            <td> <input name="nbAccident" type="text" value=0 style="border:none; background-color:transparent; outline:none"/></td>
+            <td> <input name="nbAccident" type="number" value=0 style="border:none; background-color:transparent; outline:none"/></td>
             <td>vert</td>
           </tr>
         </tbody>
