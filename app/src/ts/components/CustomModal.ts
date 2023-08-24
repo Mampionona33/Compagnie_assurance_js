@@ -1,9 +1,14 @@
 export class CustomModal {
   title: string;
   body?: string;
+  buttonSave: HTMLButtonElement | null;
 
   constructor(title: string) {
     this.title = title;
+  }
+
+  setButtonSave(buttonSave: HTMLButtonElement | null): void {
+    this.buttonSave = buttonSave;
   }
 
   setTitle(title: string): void {
@@ -16,6 +21,25 @@ export class CustomModal {
 
   getTitle(): string {
     return this.title;
+  }
+
+  getButtonSave(): HTMLButtonElement | null {
+    return this.buttonSave;
+  }
+
+  public hanldeClicSave() {
+    this.setButtonSave(document.querySelector("#btn_save"));
+    const formContainer = document.createElement("form");
+    if (this.buttonSave) {
+      this.buttonSave?.addEventListener("click", (ev: Event) => {
+        ev.preventDefault();
+        formContainer.id = "custom_modal_id";
+        formContainer.innerHTML = this.body ? this.body : "";
+        console.log(formContainer);
+
+        // return formContainer;
+      });
+    }
   }
 
   render(): string {
