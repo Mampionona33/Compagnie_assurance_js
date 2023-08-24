@@ -1,63 +1,55 @@
-import { CustomModal } from "./CustomModal";
+interface RowData {
+  nom: string;
+  prenom: string;
+  // Ajoutez d'autres propriétés ici
+}
 
-export class Table {
-  header: Array<string> = [];
-  modalAdd: CustomModal;
+class Table {
+  private data: RowData[] = [];
+  private tableElement: HTMLTableElement;
 
-  setHeader(header: Array<string>): void {
-    this.header = header;
+  constructor(private headers: string[]) {
+    this.tableElement = document.createElement('table');
+    this.tableElement.classList.add('table', 'table-bordered', 'table-striped', 'shadow-sm');
+
+    this.initializeTableHeader();
   }
 
-  setModalAdd(modalAdd: CustomModal): void {
-    this.modalAdd = modalAdd;
+  private initializeTableHeader(): void {
+    const theadElement = document.createElement('thead');
+    theadElement.classList.add('text-capitalize', 'table-dark', 'align-top');
+
+    const headerRow = document.createElement('tr');
+    this.headers.forEach(headerText => {
+      const thElement = document.createElement('th');
+      thElement.textContent = headerText;
+      headerRow.appendChild(thElement);
+    });
+
+    theadElement.appendChild(headerRow);
+    this.tableElement.appendChild(theadElement);
   }
 
-  getModalAdd(): CustomModal {
-    return this.modalAdd;
-  }
-  getHeader(): Array<string> {
-    return this.header;
+  public setData(data: RowData[]) {
+    this.data = data;
   }
 
-  formatHeader(): string {
-    const formattedHeader = this.header
-      .map((column) => `<th scope="col">${column}</th>`)
-      .join("");
-    return `<tr>${formattedHeader}</tr>`;
-  }
+  public render(): HTMLElement {
+    const tbodyElement = document.createElement('tbody');
 
-  render(): string {
-    const headerRow = this.formatHeader();
-    return `
-    <div class="container">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <button type="button" id="table-btn-add" class="btn btn-primary d-flex gap-1" data-bs-toggle="modal" data-bs-target="#modal">
-          <span class="material-icons-outlined">
-              add_circle_outline
-          </span>
-          Ajouter
-        </button>
-      </div>
-      <div class="table-responsive">
-        <table class="table table-bordered table-striped shadow-sm">
-          <thead class="text-capitalize table-dark align-top">
-            ${headerRow}
-          </thead>
-          <tbody>
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>22/05/1989</td>
-              <td>34</td>
-              <td>2015</td>
-              <td>2015</td>
-              <td> <input name="nbAccident" type="number" value=0 style="border:none; background-color:transparent; outline:none"/></td>
-              <td>vert</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    `;
+    this.data.forEach(rowData => {
+      const rowElement = document.createElement('tr');
+      Object.values(rowData).forEach(cellData => {
+        const cellElement = document.createElement('td');
+        cellElement.textContent = cellData;
+        rowElement.appendChild(cellElement);
+      });
+      tbodyElement.appendChild(rowElement);
+    });
+
+    this.tableElement.appendChild(tbodyElement);
+    return this.tableElement;
   }
 }
+
+export default Table;

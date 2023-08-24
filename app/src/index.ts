@@ -1,106 +1,112 @@
 import * as bootstrap from "bootstrap";
-import { Table } from "./ts/components/Table";
-import { CustomModal } from "./ts/components/CustomModal";
-import { FormAjoutConducteur } from "./ts/components/FormAjoutConducteur";
 import * as $ from "jquery";
+import Table from "./ts/components/Table";
+import Modal from "./ts/components/Modal";
+import CustomButton from "./ts/components/CustomButton";
 
 class App {
-  formAjoutConducteur: FormAjoutConducteur;
-  modal;
-  modalAddContent: CustomModal;
+  private table: Table;
+  private modalAjoutConducteur: Modal;
+  private tableHeander: Array<string>;
+  private root: HTMLElement;
+  private addButton: CustomButton;
+  private mainContainer: HTMLElement;
 
-  setModalAddContent(modalAddContent: CustomModal): void {
-    this.modalAddContent = modalAddContent;
+  setRoot(root: HTMLElement) {
+    this.root = root;
   }
-  getModalAddContent(): CustomModal {
-    return this.modalAddContent;
+  getRoot(): HTMLElement {
+    return this.root;
   }
 
-  constructor() {
-    console.log("Hello World!");
-    this.formAjoutConducteur = new FormAjoutConducteur();
-    const table = new Table();
-    table.setHeader([
+  private initializeRoot(): void {
+    const root = $("#root");
+    if (root) {
+      this.setRoot(root);
+    }
+  }
+
+  private createMainContainer(): void {
+    this.mainContainer = document.createElement("div");
+    this.mainContainer.classList.add(
+      "d-flex",
+      "align-items-start",
+      "gap-3",
+      "flex-column"
+    );
+  }
+
+  private initialiseTableHeader(): void {
+    this.tableHeander = [
       "Nom",
       "Prénom",
       "Date de naissance",
-      "age",
-      "dete optention permis",
-      "date d'adhésion",
-      "nombre d'accident",
-      "tarif",
-    ]);
+      "Date d'adhésion",
+      "Âge",
+      "Nombre d'accident",
+      "Tarif",
+    ];
+  }
 
-    const modalAddConductorContainer = document.createElement("div");
-    modalAddConductorContainer.classList.add("modal");
-    modalAddConductorContainer.id = "modal";
-    this.setModalAddContent(new CustomModal("Ajout conducteur"));
-    // const modalAddContent = new CustomModal("Ajout conducteur");
-    // const formAjoutConducteur = new FormAjoutConducteur();
-    this.modalAddContent.setBody(this.formAjoutConducteur.render());
-    modalAddConductorContainer.innerHTML = this.modalAddContent.render();
+  private initializeModalAddDriver(): void {
+    this.modalAjoutConducteur = new Modal(
+      "Ajout conducteur",
+      "modal_ajout_conducteur"
+    );
+  }
 
-    const bouttonAddConductor = document.querySelector("#table-btn-add");
-    if (bouttonAddConductor) {
-      bouttonAddConductor.addEventListener(
-        "click",
-        this.handleButtonClick.bind(this, modalAddConductorContainer)
-      );
-    }
+  private openModalAddDriver(): void {
+    this.modalAjoutConducteur.open();
+  }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const root = document.querySelector("#root");
+  private initialiseButtonAdd(): void {
+    this.addButton = new CustomButton();
+    this.addButton.classList.add("btn", "btn-primary");
+    this.addButton.setAttribute("data-bs-toggle", "modal");
+    this.addButton.setAttribute("data-bs-target", "#modal");
+  }
 
-      if (root) {
-        root.innerHTML = table.render();
-        document.body.appendChild(modalAddConductorContainer);
-        // this.handleClickModalSave();
-        this.modalAddContent.hanldeClicSave();
-      }
+  private appendTableToMainContainer(): void {
+    this.mainContainer.append(this.table.render());
+  }
+
+  private handleClickAddButton(): void {
+    this.addButton.addEventListener("click", (ev: Event) => {
+      ev.preventDefault();
+      this.initializeModalAddDriver();
+      this.openModalAddDriver();
     });
   }
 
-  showModal(modalEl) {
-    this.modal = new bootstrap.Modal(modalEl, {
-      backdrop: true,
-      keyboard: true,
+  private appendAddButtonToMainContainer(): void {
+    this.mainContainer.append(this.addButton);
+  }
+  private appendMainContainerToRoot(): void {
+    this.root.append(this.mainContainer);
+  }
+
+  private render(): void {
+    this.appendMainContainerToRoot();
+    this.appendAddButtonToMainContainer();
+    this.appendTableToMainContainer();
+  }
+
+  private handleDocumentReady(): void {
+    $(document).ready(() => {
+      this.render();
     });
-    modalEl.classList.add("show");
-    this.modal.show();
   }
 
-  handleButtonClick(modalEl, ev) {
-    ev.preventDefault();
-    this.showModal(modalEl);
+  constructor() {
+    this.initializeRoot();
+    this.createMainContainer();
+    this.initialiseTableHeader();
+    this.table = new Table(this.tableHeander);
+    this.initialiseButtonAdd();
+    this.addButton.innerHTML = "Ajout";
+    this.handleClickAddButton();
+    this.handleDocumentReady();
   }
-
-  private formatConductor(): void {}
-
-  // handleClickModalSave() {
-  //   const saveButton = document.querySelector("#btn_save");
-  //   if (saveButton) {
-  //     saveButton.addEventListener("click", () => {
-  //       const nomInput = document.getElementById("nom") as HTMLInputElement;
-  //       const prenomInput = document.getElementById(
-  //         "prenom"
-  //       ) as HTMLInputElement;
-
-  //       const dateDeNaissanceInput = document.getElementById(
-  //         "dateDeNaissance"
-  //       ) as HTMLInputElement;
-  //       const dateAdhesionInput = document.getElementById(
-  //         "dateAdhesion"
-  //       ) as HTMLInputElement;
-
-  //       const name = nomInput.value;
-  //       const prenom = prenomInput.value;
-  //       const dateDeNaissance = dateDeNaissanceInput.value;
-  //       const dateAdhesion = dateAdhesionInput.value;
-
-  //       console.log(name, prenom, dateDeNaissance, dateAdhesion);
-  //     });
-  //   }
-  // }
 }
 
 const app = new App();
