@@ -12,11 +12,11 @@ class FormAddDriver {
             <div class="row">
                 <div class="col-sm-6">
                     <label for="nom" class="form-label">Nom</label>
-                    <input type="text"  class="form-control" id="nom" placeholder="Nom">
+                    <input type="text"  class="form-control" id="nom" placeholder="Nom" required>
                 </div>
                 <div class="col-sm-6">
                     <label for="prenom" class="form-label">Prénom</label>
-                    <input type="text" class="form-control" id="prenom" placeholder="Prénom">
+                    <input type="text" class="form-control" id="prenom" placeholder="Prénom" required>
                 </div>
             </div>
             <div class="row">

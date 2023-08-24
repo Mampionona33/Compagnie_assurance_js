@@ -53,12 +53,14 @@ class App {
   private initializeModalAddDriver(): void {
     this.modalAjoutConducteur = new Modal(
       "Ajout conducteur",
-      "modal_ajout_conducteur"
+      "modal_ajout_conducteur",
+      this.saveCandidatToLocalStorage.bind(this)
     );
   }
 
   private openModalAddDriver(): void {
     this.modalAjoutConducteur.setBody(this.formAddDriver.render());
+
     this.modalAjoutConducteur.open();
   }
 
@@ -96,6 +98,10 @@ class App {
     this.appendMainContainerToRoot();
     this.appendAddButtonToMainContainer();
     this.appendTableToMainContainer();
+  }
+
+  private saveCandidatToLocalStorage(): void {
+    console.log("Sauvegarde dans le localStorage effectuée");
   }
 
   private handleDocumentReady(): void {

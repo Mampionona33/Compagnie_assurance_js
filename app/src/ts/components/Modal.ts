@@ -7,19 +7,48 @@ class Modal {
   private body: HTMLElement;
   private modalContainer: bootstrap.Modal | null;
   private id: string;
+  private buttonSave: HTMLElement | null;
+  private handleClickSave: CallableFunction;
 
   public setBody(body: HTMLElement): void {
     this.body = body;
     this.render();
+  }
+  public setHandleClickSave(handleClickSave: CallableFunction): void {
+    this.handleClickSave = handleClickSave;
+  }
+
+  /**
+   * geth
+   * HandleClickSave
+   */
+  public getHandleClickSave(): CallableFunction {
+    return this.handleClickSave;
   }
 
   public getBody(): HTMLElement {
     return this.body;
   }
 
-  constructor(title: string, id: string) {
+  public setButtonSave(buttonSave: HTMLElement | null): void {
+    this.buttonSave = buttonSave;
+  }
+
+  public getButtonSave(): HTMLElement | null {
+    return this.buttonSave;
+  }
+
+  private initializeButtonSave(): void {
+    const btn_save = document.getElementById("btn_save");
+    if (btn_save) {
+      this.buttonSave = btn_save;
+    }
+  }
+
+  constructor(title: string, id: string, handleClickSave: CallableFunction) {
     this.id = id;
     this.title = title;
+    // this.setHandleClickSave(handleClickSave);
     this.modal = document.createElement("div");
     this.modal.className = "modal fade";
     this.modal.setAttribute("id", this.id);
@@ -30,16 +59,28 @@ class Modal {
       keyboard: true,
     });
     this.destroy();
+    console.log(this.buttonSave);
   }
 
   public open() {
     this.modalContainer?.show();
   }
 
+  private handleButtonClickSave(callback: CallableFunction): void {
+    if (this.buttonSave) {
+      console.log("test");
+
+      this.buttonSave.addEventListener("click", () => {
+        callback();
+        this.modalContainer?.hide();
+      });
+    }
+  }
+
   private destroy(): void {
     this.modal.addEventListener("hidden.bs.modal", () => {
       this.modal.remove();
-      this.modalContainer = null; // Remove the modalContainer reference
+      this.modalContainer = null;
     });
   }
 
@@ -61,6 +102,9 @@ class Modal {
           </div>
       </div>
     `;
+    this.initializeButtonSave();
+    // this.buttonSave = document.getElementById("btn_save");
+    this.buttonSave?.addEventListener("click", () => console.log("test"));
     return this.modal;
   }
 }
