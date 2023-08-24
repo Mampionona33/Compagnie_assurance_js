@@ -1,8 +1,9 @@
 import * as bootstrap from "bootstrap";
 import * as $ from "jquery";
-import Table from "./ts/components/Table";
-import Modal from "./ts/components/Modal";
-import CustomButton from "./ts/components/CustomButton";
+import Table from "./components/Table";
+import Modal from "./components/Modal";
+import CustomButton from "./components/CustomButton";
+import FormAddDriver from "./components/FormAddDriver";
 
 class App {
   private table: Table;
@@ -11,6 +12,7 @@ class App {
   private root: HTMLElement;
   private addButton: CustomButton;
   private mainContainer: HTMLElement;
+  private formAddDriver: FormAddDriver;
 
   setRoot(root: HTMLElement) {
     this.root = root;
@@ -56,6 +58,7 @@ class App {
   }
 
   private openModalAddDriver(): void {
+    this.modalAjoutConducteur.setBody(this.formAddDriver.render());
     this.modalAjoutConducteur.open();
   }
 
@@ -64,6 +67,10 @@ class App {
     this.addButton.classList.add("btn", "btn-primary");
     this.addButton.setAttribute("data-bs-toggle", "modal");
     this.addButton.setAttribute("data-bs-target", "#modal");
+  }
+
+  private initializeFormAddDriver(): void {
+    this.formAddDriver = new FormAddDriver();
   }
 
   private appendTableToMainContainer(): void {
@@ -102,6 +109,7 @@ class App {
     this.createMainContainer();
     this.initialiseTableHeader();
     this.table = new Table(this.tableHeander);
+    this.initializeFormAddDriver();
     this.initialiseButtonAdd();
     this.addButton.innerHTML = "Ajout";
     this.handleClickAddButton();

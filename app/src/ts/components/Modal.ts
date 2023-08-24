@@ -8,6 +8,15 @@ class Modal {
   private modalContainer: bootstrap.Modal | null;
   private id: string;
 
+  public setBody(body: HTMLElement): void {
+    this.body = body;
+    this.render();
+  }
+
+  public getBody(): HTMLElement {
+    return this.body;
+  }
+
   constructor(title: string, id: string) {
     this.id = id;
     this.title = title;
