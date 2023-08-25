@@ -8,6 +8,11 @@ import FormAddDriver from "./components/FormAddDriver";
 interface IDrivers extends TableRowData {
   nom: string;
   prenom: string;
+  dateDeNaissance: Date;
+  dateAdhesion: Date;
+  age?: number;
+  numberAccident?: number;
+  tarif?: string;
 }
 
 class App {
@@ -124,6 +129,8 @@ class App {
     const newRowData: IDrivers = {
       nom: this.modalFormAddDriveInputs["nom"],
       prenom: this.modalFormAddDriveInputs["prenom"],
+      dateDeNaissance:this.modalFormAddDriveInputs["dateDeNaissance"],
+      dateAdhesion:this.modalFormAddDriveInputs["dateAdhesion"]
     };
 
     const savedData = localStorage.getItem("list_drivers");
@@ -163,19 +170,18 @@ class App {
 
   private updateTableWithNewData() {
     this.getListDriversFromLocalstorage();
-  
+
     const newTable = new Table<IDrivers>({
       headers: this.tableHeander,
       data: this.tableData,
     });
-  
+
     const tableContainer = document.querySelector(".table-container");
     if (tableContainer) {
       tableContainer.innerHTML = "";
       tableContainer.appendChild(newTable.render());
     }
   }
-  
 
   private handleDocumentReady(): void {
     $(document).ready(() => {
@@ -200,7 +206,6 @@ class App {
     this.handleDocumentReady();
     this.updateTableWithNewData();
   }
-  
 }
 
 const app = new App();

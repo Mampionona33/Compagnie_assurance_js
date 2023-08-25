@@ -8,6 +8,7 @@ class Modal {
   private id: string;
   private buttonSave: HTMLElement | null;
   private handleClickSave: CallableFunction;
+  private validators: CallableFunction[];
 
   public setBody(body: HTMLElement): void {
     this.body = body;
@@ -44,9 +45,25 @@ class Modal {
     }
   }
 
+  private validate(validators: CallableFunction[]): boolean {
+    try {
+      for (const validator of validators) {
+        const validationResult = validator();
+        if (!validationResult) {
+          throw new Error("Validation failed");
+        }
+      }
+      return true; 
+    } catch (error) {
+      console.error("Validation error:", error);
+      return false; 
+    }
+  }
+
   constructor(title: string, id: string, handleClickSave: CallableFunction) {
     this.id = id;
     this.title = title;
+    this.validators = [];
     this.setHandleClickSave(handleClickSave);
     this.modal = document.createElement("div");
     this.modal.className = "modal fade";
@@ -101,7 +118,16 @@ class Modal {
       </div>
     `;
     this.initializeButtonSave();
-    this.handleButtonClickSave();
+    this.buttonSave?.addEventListener("click", () => {
+      if (this.validators.length === 0) {
+        this.handleButtonClickSave();
+      } else {
+        const isValid = this.validate(this.validators);
+        if (isValid) {
+          this.handleButtonClickSave();
+        }
+      }
+    });
     return this.modal;
   }
 }

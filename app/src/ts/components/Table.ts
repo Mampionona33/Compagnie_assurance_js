@@ -1,5 +1,5 @@
 export interface TableRowData {
-  [key: string]: string | number;
+  [key: string]: any;
   // Ajoutez d'autres propriétés ici
 }
 
