@@ -69,7 +69,7 @@ class Modal {
       this.buttonSave.addEventListener("click", (ev:Event) => {
         ev.preventDefault();
         this.handleClickSave();
-        this.modalContainer?.hide();
+        // this.modalContainer?.hide();
       });
     }
   }

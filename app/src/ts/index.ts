@@ -13,6 +13,15 @@ class App {
   private addButton: CustomButton;
   private mainContainer: HTMLElement;
   private formAddDriver: FormAddDriver;
+  private modalFormAddDriveInputs : object;
+
+  setModalAddDriverInpts(modalFormAddDriveInputs:object):void{
+    this.modalFormAddDriveInputs = modalFormAddDriveInputs;
+  }
+
+  public getModalAddDriverInpts():object{
+    return this.modalFormAddDriveInputs;
+  }
 
   setRoot(root: HTMLElement) {
     this.root = root;
@@ -102,7 +111,28 @@ class App {
 
   private saveCandidatToLocalStorage(): void {
     console.log("Sauvegarde dans le localStorage effectuée");
+    this.getFormAddDriverInputs();
+    console.log(this.modalFormAddDriveInputs);
+    
   }
+
+  private getFormAddDriverInputs() {
+    const formAddDriver = document.getElementById("modal_ajout_conducteur");
+    if (formAddDriver) {
+      const inputElements = formAddDriver.querySelectorAll("input");
+      const inputValues = {};
+  
+      inputElements.forEach((input: HTMLInputElement) => {
+        const inputId = input.id;
+        const inputValue = input.value;
+        inputValues[inputId] = inputValue;
+      });
+  
+      // console.log("Input values:", inputValues);
+      this.setModalAddDriverInpts(inputValues);
+    }
+  }
+  
 
   private handleDocumentReady(): void {
     $(document).ready(() => {
