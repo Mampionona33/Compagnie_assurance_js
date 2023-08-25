@@ -1,5 +1,4 @@
 import * as bootstrap from "bootstrap";
-import * as $ from "jquery";
 
 class Modal {
   private modal: HTMLDivElement;
@@ -48,7 +47,7 @@ class Modal {
   constructor(title: string, id: string, handleClickSave: CallableFunction) {
     this.id = id;
     this.title = title;
-    // this.setHandleClickSave(handleClickSave);
+    this.setHandleClickSave(handleClickSave);
     this.modal = document.createElement("div");
     this.modal.className = "modal fade";
     this.modal.setAttribute("id", this.id);
@@ -59,19 +58,17 @@ class Modal {
       keyboard: true,
     });
     this.destroy();
-    console.log(this.buttonSave);
   }
 
   public open() {
     this.modalContainer?.show();
   }
 
-  private handleButtonClickSave(callback: CallableFunction): void {
+  private handleButtonClickSave(): void {
     if (this.buttonSave) {
-      console.log("test");
-
-      this.buttonSave.addEventListener("click", () => {
-        callback();
+      this.buttonSave.addEventListener("click", (ev:Event) => {
+        ev.preventDefault();
+        this.handleClickSave();
         this.modalContainer?.hide();
       });
     }
@@ -103,8 +100,7 @@ class Modal {
       </div>
     `;
     this.initializeButtonSave();
-    // this.buttonSave = document.getElementById("btn_save");
-    this.buttonSave?.addEventListener("click", () => console.log("test"));
+    this.handleButtonClickSave();
     return this.modal;
   }
 }
