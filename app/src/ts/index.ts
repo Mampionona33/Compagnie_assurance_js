@@ -48,6 +48,20 @@ class App {
     }
   }
 
+  private verifyAge(date: Date): boolean {
+    const currentDate = new Date();
+    const ageInMillis = currentDate.getTime() - date.getTime();
+    const ageInYears = ageInMillis / (1000 * 60 * 60 * 24 * 365);
+    return ageInYears > 15;
+  }
+
+  private verifyBirthdayBeforeAdhesion(
+    birthday: Date,
+    adhesionDate: Date
+  ): boolean {
+    return birthday < adhesionDate;
+  }
+
   private createMainContainer(): void {
     this.mainContainer = document.createElement("div");
     this.mainContainer.classList.add(
@@ -80,7 +94,6 @@ class App {
 
   private openModalAddDriver(): void {
     this.modalAjoutConducteur.setBody(this.formAddDriver.render());
-
     this.modalAjoutConducteur.open();
   }
 
@@ -113,15 +126,40 @@ class App {
   private appendMainContainerToRoot(): void {
     this.root.append(this.mainContainer);
   }
-
-  private render(): void {
-    this.appendMainContainerToRoot();
-    this.appendAddButtonToMainContainer();
-    this.appendTableToMainContainer();
+  private verifyNameNotEmpty(name: string): boolean {
+    return name.trim() !== "";
   }
 
   private saveCandidatToLocalStorage(): void {
     this.getFormAddDriverInputs();
+
+    // Perform the validations
+    const isLegalAge = this.verifyAge(
+      this.modalFormAddDriveInputs["dateDeNaissance"]
+    );
+    const isBeforeAdhesion = this.verifyBirthdayBeforeAdhesion(
+      this.modalFormAddDriveInputs["dateDeNaissance"],
+      this.modalFormAddDriveInputs["dateAdhesion"]
+    );
+    const isNameNotEmpty = this.verifyNameNotEmpty(
+      this.modalFormAddDriveInputs["nom"]
+    );
+
+    if (!isLegalAge) {
+      alert("Le conducteur doit avoir au moins 16 ans.");
+      return;
+    }
+
+    if (!isBeforeAdhesion) {
+      alert("La date de naissance doit être antérieure à la date d'adhésion.");
+      return;
+    }
+
+    if (!isNameNotEmpty) {
+      alert("Le champ 'Nom' ne peut pas être vide.");
+      return;
+    }
+
     this.saveFormAddDriverToLocalStorage();
   }
 
@@ -129,8 +167,8 @@ class App {
     const newRowData: IDrivers = {
       nom: this.modalFormAddDriveInputs["nom"],
       prenom: this.modalFormAddDriveInputs["prenom"],
-      dateDeNaissance:this.modalFormAddDriveInputs["dateDeNaissance"],
-      dateAdhesion:this.modalFormAddDriveInputs["dateAdhesion"]
+      dateDeNaissance: this.modalFormAddDriveInputs["dateDeNaissance"],
+      dateAdhesion: this.modalFormAddDriveInputs["dateAdhesion"],
     };
 
     const savedData = localStorage.getItem("list_drivers");
@@ -153,10 +191,14 @@ class App {
       inputElements.forEach((input: HTMLInputElement) => {
         const inputId = input.id;
         const inputValue = input.value;
-        inputValues[inputId] = inputValue;
+
+        if (input.type === "date") {
+          inputValues[inputId] = new Date(inputValue);
+        } else {
+          inputValues[inputId] = inputValue;
+        }
       });
 
-      // console.log("Input values:", inputValues);
       this.setModalAddDriverInpts(inputValues);
     }
   }
@@ -187,6 +229,12 @@ class App {
     $(document).ready(() => {
       this.render();
     });
+  }
+
+  private render(): void {
+    this.appendMainContainerToRoot();
+    this.appendAddButtonToMainContainer();
+    this.appendTableToMainContainer();
   }
 
   constructor() {

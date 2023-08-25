@@ -34,8 +34,6 @@ class Table<T extends TableRowData> {
       thElement.textContent = headerText;
       headerRow.appendChild(thElement);
     });
-    console.log(headerRow);
-
     theadElement.appendChild(headerRow);
     this.tableElement.appendChild(theadElement);
   }
