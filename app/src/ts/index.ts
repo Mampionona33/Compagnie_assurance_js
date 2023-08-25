@@ -4,12 +4,13 @@ import Table, { TableRowData } from "./components/Table";
 import Modal from "./components/Modal";
 import CustomButton from "./components/CustomButton";
 import FormAddDriver from "./components/FormAddDriver";
+import { format } from "date-fns";
 
 interface IDrivers extends TableRowData {
   nom: string;
   prenom: string;
-  dateDeNaissance: Date;
-  dateAdhesion: Date;
+  dateDeNaissance: Date | string;
+  dateAdhesion: Date | string;
   age?: number;
   numberAccident?: number;
   tarif?: string;
@@ -206,16 +207,26 @@ class App {
   private getListDriversFromLocalstorage() {
     const savedData = localStorage.getItem("list_drivers");
     if (savedData) {
-      this.tableData = JSON.parse(savedData);
+      this.tableData = JSON.parse(savedData).map((driver) => ({
+        ...driver,
+        dateDeNaissance: format(new Date(driver.dateDeNaissance), "dd/MM/yyyy"),
+        dateAdhesion: format(new Date(driver.dateAdhesion), "dd/MM/yyyy"),
+      }));
     }
   }
 
   private updateTableWithNewData() {
     this.getListDriversFromLocalstorage();
 
+    const formattedData = this.tableData.map((driver) => ({
+      ...driver,
+      dateDeNaissance: driver.dateDeNaissance,
+      dateAdhesion: driver.dateAdhesion,
+    }));
+
     const newTable = new Table<IDrivers>({
       headers: this.tableHeander,
-      data: this.tableData,
+      data: formattedData,
     });
 
     const tableContainer = document.querySelector(".table-container");
@@ -227,6 +238,8 @@ class App {
 
   private handleDocumentReady(): void {
     $(document).ready(() => {
+      this.getListDriversFromLocalstorage();
+      this.updateTableWithNewData();
       this.render();
     });
   }
