@@ -1,12 +1,17 @@
 import * as bootstrap from "bootstrap";
 import * as $ from "jquery";
-import Table, { RowData } from "./components/Table";
+import Table, { TableRowData } from "./components/Table";
 import Modal from "./components/Modal";
 import CustomButton from "./components/CustomButton";
 import FormAddDriver from "./components/FormAddDriver";
 
+interface IDrivers extends TableRowData {
+  nom: string;
+  prenom: string;
+}
+
 class App {
-  private table: Table;
+  private table: Table<IDrivers>;
   private modalAjoutConducteur: Modal;
   private tableHeander: Array<string>;
   private root: HTMLElement;
@@ -14,7 +19,7 @@ class App {
   private mainContainer: HTMLElement;
   private formAddDriver: FormAddDriver;
   private modalFormAddDriveInputs: object;
-  private tableData: Array<RowData>;
+  private tableData: Array<IDrivers>;
 
   setModalAddDriverInpts(modalFormAddDriveInputs: object): void {
     this.modalFormAddDriveInputs = modalFormAddDriveInputs;
@@ -116,13 +121,13 @@ class App {
   }
 
   private saveFormAddDriverToLocalStorage(): void {
-    const newRowData: RowData = {
+    const newRowData: IDrivers = {
       nom: this.modalFormAddDriveInputs["nom"],
       prenom: this.modalFormAddDriveInputs["prenom"],
     };
 
     const savedData = localStorage.getItem("list_drivers");
-    let existingData: RowData[] = [];
+    let existingData: IDrivers[] = [];
     if (savedData) {
       existingData = JSON.parse(savedData);
     }
@@ -158,13 +163,19 @@ class App {
 
   private updateTableWithNewData() {
     this.getListDriversFromLocalstorage();
-    this.table.setData(this.tableData);
+  
+    const newTable = new Table<IDrivers>({
+      headers: this.tableHeander,
+      data: this.tableData,
+    });
+  
     const tableContainer = document.querySelector(".table-container");
     if (tableContainer) {
       tableContainer.innerHTML = "";
-      tableContainer.appendChild(this.table.render());
+      tableContainer.appendChild(newTable.render());
     }
   }
+  
 
   private handleDocumentReady(): void {
     $(document).ready(() => {
@@ -178,7 +189,10 @@ class App {
     this.getListDriversFromLocalstorage();
     this.createMainContainer();
     this.initialiseTableHeader();
-    this.table = new Table(this.tableHeander);
+    this.table = new Table<IDrivers>({
+      headers: this.tableHeander,
+      data: this.tableData,
+    });
     this.initializeFormAddDriver();
     this.initialiseButtonAdd();
     this.addButton.innerHTML = "Ajout";
@@ -186,6 +200,7 @@ class App {
     this.handleDocumentReady();
     this.updateTableWithNewData();
   }
+  
 }
 
 const app = new App();

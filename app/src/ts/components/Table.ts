@@ -1,14 +1,20 @@
-export interface RowData {
-  nom: string;
-  prenom: string;
+export interface TableRowData {
+  [key: string]: string | number;
   // Ajoutez d'autres propriétés ici
 }
 
-class Table {
-  private data: RowData[] = [];
-  private tableElement: HTMLTableElement;
+interface TableOptions<T extends TableRowData> {
+  headers: string[];
+  data: T[];
+}
 
-  constructor(private headers: string[]) {
+class Table<T extends TableRowData> {
+  private tableElement: HTMLTableElement;
+  private tableOptions: TableOptions<T>;
+
+  constructor(options: TableOptions<T>) {
+    this.tableOptions = options;
+
     this.tableElement = document.createElement("table");
     this.tableElement.classList.add(
       "table",
@@ -16,8 +22,6 @@ class Table {
       "table-striped",
       "shadow-sm"
     );
-
-    this.initializeTableHeader();
   }
 
   private initializeTableHeader(): void {
@@ -25,24 +29,21 @@ class Table {
     theadElement.classList.add("text-capitalize", "table-dark", "align-top");
 
     const headerRow = document.createElement("tr");
-    this.headers.forEach((headerText) => {
+    this.tableOptions.headers.forEach((headerText) => {
       const thElement = document.createElement("th");
       thElement.textContent = headerText;
       headerRow.appendChild(thElement);
     });
+    console.log(headerRow);
 
     theadElement.appendChild(headerRow);
     this.tableElement.appendChild(theadElement);
   }
 
-  public setData(data: RowData[]) {
-    this.data = data;
-  }
-
   private renderNoDataRow(): HTMLTableRowElement {
     const rowElement = document.createElement("tr");
     const cellElement = document.createElement("td");
-    cellElement.colSpan = this.headers.length;
+    cellElement.colSpan = this.tableOptions.headers.length;
     cellElement.innerHTML = "<div>Aucune donnée trouvée</div>";
     rowElement.appendChild(cellElement);
     return rowElement;
@@ -52,31 +53,22 @@ class Table {
     const containerElement = document.createElement("div");
     const tbodyElement = document.createElement("tbody");
 
-    if (this.data.length === 0) {
+    if (this.tableOptions.data.length === 0) {
       tbodyElement.appendChild(this.renderNoDataRow());
     } else {
-      this.data.forEach((rowData) => {
+      this.tableOptions.data.forEach((rowData) => {
         const rowElement = document.createElement("tr");
         Object.values(rowData).forEach((cellData) => {
           const cellElement = document.createElement("td");
-          cellElement.textContent = cellData;
+          cellElement.textContent = cellData.toString();
           rowElement.appendChild(cellElement);
         });
         tbodyElement.appendChild(rowElement);
       });
     }
 
-    const theadElement = document.createElement("thead");
-    const headerRow = document.createElement("tr");
-    this.headers.forEach((headerText) => {
-      const thElement = document.createElement("th");
-      thElement.textContent = headerText;
-      headerRow.appendChild(thElement);
-    });
-    theadElement.appendChild(headerRow);
-
     this.tableElement.innerHTML = "";
-    this.tableElement.appendChild(theadElement);
+    this.initializeTableHeader();
     this.tableElement.appendChild(tbodyElement);
     containerElement.appendChild(this.tableElement);
 
