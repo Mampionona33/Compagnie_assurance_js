@@ -66,10 +66,11 @@ class Modal {
 
   private handleButtonClickSave(): void {
     if (this.buttonSave) {
-      this.buttonSave.addEventListener("click", (ev:Event) => {
+      this.buttonSave.addEventListener("click", (ev: Event) => {
         ev.preventDefault();
         this.handleClickSave();
-        // this.modalContainer?.hide();
+        this.modalContainer?.hide();
+        window.location.reload();
       });
     }
   }

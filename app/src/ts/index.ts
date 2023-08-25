@@ -1,6 +1,6 @@
 import * as bootstrap from "bootstrap";
 import * as $ from "jquery";
-import Table from "./components/Table";
+import Table, { RowData } from "./components/Table";
 import Modal from "./components/Modal";
 import CustomButton from "./components/CustomButton";
 import FormAddDriver from "./components/FormAddDriver";
@@ -13,13 +13,14 @@ class App {
   private addButton: CustomButton;
   private mainContainer: HTMLElement;
   private formAddDriver: FormAddDriver;
-  private modalFormAddDriveInputs : object;
+  private modalFormAddDriveInputs: object;
+  private tableData: Array<RowData>;
 
-  setModalAddDriverInpts(modalFormAddDriveInputs:object):void{
+  setModalAddDriverInpts(modalFormAddDriveInputs: object): void {
     this.modalFormAddDriveInputs = modalFormAddDriveInputs;
   }
 
-  public getModalAddDriverInpts():object{
+  public getModalAddDriverInpts(): object {
     return this.modalFormAddDriveInputs;
   }
 
@@ -110,10 +111,25 @@ class App {
   }
 
   private saveCandidatToLocalStorage(): void {
-    console.log("Sauvegarde dans le localStorage effectuée");
     this.getFormAddDriverInputs();
-    console.log(this.modalFormAddDriveInputs);
-    
+    this.saveFormAddDriverToLocalStorage();
+  }
+
+  private saveFormAddDriverToLocalStorage(): void {
+    const newRowData: RowData = {
+      nom: this.modalFormAddDriveInputs["nom"],
+      prenom: this.modalFormAddDriveInputs["prenom"],
+    };
+
+    const savedData = localStorage.getItem("list_drivers");
+    let existingData: RowData[] = [];
+    if (savedData) {
+      existingData = JSON.parse(savedData);
+    }
+
+    existingData.push(newRowData);
+
+    localStorage.setItem("list_drivers", JSON.stringify(existingData));
   }
 
   private getFormAddDriverInputs() {
@@ -121,18 +137,34 @@ class App {
     if (formAddDriver) {
       const inputElements = formAddDriver.querySelectorAll("input");
       const inputValues = {};
-  
+
       inputElements.forEach((input: HTMLInputElement) => {
         const inputId = input.id;
         const inputValue = input.value;
         inputValues[inputId] = inputValue;
       });
-  
+
       // console.log("Input values:", inputValues);
       this.setModalAddDriverInpts(inputValues);
     }
   }
-  
+
+  private getListDriversFromLocalstorage() {
+    const savedData = localStorage.getItem("list_drivers");
+    if (savedData) {
+      this.tableData = JSON.parse(savedData);
+    }
+  }
+
+  private updateTableWithNewData() {
+    this.getListDriversFromLocalstorage();
+    this.table.setData(this.tableData);
+    const tableContainer = document.querySelector(".table-container");
+    if (tableContainer) {
+      tableContainer.innerHTML = "";
+      tableContainer.appendChild(this.table.render());
+    }
+  }
 
   private handleDocumentReady(): void {
     $(document).ready(() => {
@@ -141,7 +173,9 @@ class App {
   }
 
   constructor() {
+    this.tableData = [];
     this.initializeRoot();
+    this.getListDriversFromLocalstorage();
     this.createMainContainer();
     this.initialiseTableHeader();
     this.table = new Table(this.tableHeander);
@@ -150,6 +184,7 @@ class App {
     this.addButton.innerHTML = "Ajout";
     this.handleClickAddButton();
     this.handleDocumentReady();
+    this.updateTableWithNewData();
   }
 }
 
