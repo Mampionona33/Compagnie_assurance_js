@@ -7,6 +7,7 @@ import FormAddDriver from "./components/FormAddDriver";
 import { format, formatDistanceToNow } from "date-fns";
 
 interface IDrivers extends TableRowData {
+  id: number;
   nom: string;
   prenom: string;
   dateDeNaissance: Date | string;
@@ -75,6 +76,7 @@ class App {
 
   private initialiseTableHeader(): void {
     this.tableHeander = [
+      "id",
       "Nom",
       "Prénom",
       "Date de naissance",
@@ -119,6 +121,20 @@ class App {
       this.initializeModalAddDriver();
       this.openModalAddDriver();
     });
+  }
+
+  private createId(): number {
+    const savedData = localStorage.getItem("list_drivers");
+    let existingData: IDrivers[] = [];
+    if (savedData) {
+      existingData = JSON.parse(savedData);
+    }
+
+    const lastRecord = existingData[existingData.length - 1];
+    const lastId =
+      lastRecord && lastRecord.id !== undefined ? lastRecord.id : 0;
+
+    return lastId + 1;
   }
 
   private appendAddButtonToMainContainer(): void {
@@ -166,6 +182,7 @@ class App {
 
   private saveFormAddDriverToLocalStorage(): void {
     const newRowData: IDrivers = {
+      id: this.createId(),
       nom: this.modalFormAddDriveInputs["nom"] || "",
       prenom: this.modalFormAddDriveInputs["prenom"] || "",
       dateDeNaissance:
@@ -176,6 +193,8 @@ class App {
           this.modalFormAddDriveInputs["dateDeNaissance"] || new Date()
         ).match(/\d+/)?.[0] || "0"
       ),
+      numberAccident: 0,
+      cellInputType: "number",
     };
 
     const savedData = localStorage.getItem("list_drivers");
