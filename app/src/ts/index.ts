@@ -4,7 +4,7 @@ import Table, { TableRowData } from "./components/Table";
 import Modal from "./components/Modal";
 import CustomButton from "./components/CustomButton";
 import FormAddDriver from "./components/FormAddDriver";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 
 interface IDrivers extends TableRowData {
   nom: string;
@@ -166,10 +166,16 @@ class App {
 
   private saveFormAddDriverToLocalStorage(): void {
     const newRowData: IDrivers = {
-      nom: this.modalFormAddDriveInputs["nom"],
-      prenom: this.modalFormAddDriveInputs["prenom"],
-      dateDeNaissance: this.modalFormAddDriveInputs["dateDeNaissance"],
-      dateAdhesion: this.modalFormAddDriveInputs["dateAdhesion"],
+      nom: this.modalFormAddDriveInputs["nom"] || "",
+      prenom: this.modalFormAddDriveInputs["prenom"] || "",
+      dateDeNaissance:
+        this.modalFormAddDriveInputs["dateDeNaissance"] || new Date(),
+      dateAdhesion: this.modalFormAddDriveInputs["dateAdhesion"] || new Date(),
+      age: parseInt(
+        formatDistanceToNow(
+          this.modalFormAddDriveInputs["dateDeNaissance"] || new Date()
+        ).match(/\d+/)?.[0] || "0"
+      ),
     };
 
     const savedData = localStorage.getItem("list_drivers");
