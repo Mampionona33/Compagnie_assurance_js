@@ -6,7 +6,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const config = {
   entry: {
-    app: "./src/ts/index.ts",
+    app: "./src/ts/index.tsx",
     styles: "./src/styles/style.scss",
   },
   output: {
@@ -14,7 +14,7 @@ const config = {
     filename: "[name]-bundle.js",
   },
   resolve: {
-    extensions: [".ts", ".js"],
+    extensions: [".ts", ".js", ".tsx", ".jsx"],
   },
   plugins: [
     new MiniCssExtractPlugin({
@@ -25,7 +25,17 @@ const config = {
     rules: [
       {
         test: /\.(js|jsx|ts|tsx)$/i,
-        loader: "babel-loader",
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: [
+              "@babel/preset-env",
+              "@babel/preset-react",
+              ["@babel/preset-typescript", { allowNamespaces: true }],
+            ],
+          },
+        },
       },
       {
         test: /\.css$/i,
