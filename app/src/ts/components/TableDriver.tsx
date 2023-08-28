@@ -36,10 +36,45 @@ const TableDriver = () => {
 
   const calculateAge = (date: string) => {
     if (isValid(new Date(date))) {
-      return formatDistanceToNow(new Date(date), { addSuffix: false }).match(
-        /\d+/
-      )?.[0];
+      const ageString = formatDistanceToNow(new Date(date), {
+        addSuffix: false,
+      }).match(/\d+/)?.[0];
+      if (ageString) {
+        return parseInt(ageString);
+      }
     }
+    return 0;
+  };
+
+  const calculateOfferType = (age: number, accidentNumber: number | null) => {
+    if (accidentNumber === null) {
+      return "";
+    }
+
+    let offerType = "";
+    if (age < 25) {
+      if (accidentNumber === 0) {
+        offerType = "bleu";
+      } else if (accidentNumber === 1) {
+        offerType = "vert";
+      } else if (accidentNumber === 2) {
+        offerType = "orange";
+      } else {
+        offerType = "refusé";
+      }
+    } else if (age >= 25) {
+      if (accidentNumber === 0) {
+        offerType = "vert";
+      } else if (accidentNumber === 1) {
+        offerType = "orange";
+      } else if (accidentNumber === 2) {
+        offerType = "rouge";
+      } else {
+        offerType = "refusé";
+      }
+    }
+
+    return offerType;
   };
 
   const createBody = () => {
@@ -66,8 +101,6 @@ const TableDriver = () => {
                     accidentNumber: parseInt(event.target.value),
                   };
 
-                  console.log(updatedDriver);
-
                   const updatedDrivers = driverContext.driver.map(
                     (prevDriver) =>
                       prevDriver.id === item.id ? updatedDriver : prevDriver
@@ -76,7 +109,7 @@ const TableDriver = () => {
                 }}
               />
             </td>
-            <td></td>
+            <td>{calculateOfferType(age, item.accidentNumber)}</td>
           </tr>
         );
       });

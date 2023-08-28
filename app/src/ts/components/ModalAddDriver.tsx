@@ -8,6 +8,7 @@ import { IDriver } from "./TableDriver";
 const ModalAddDriver = () => {
   const { showModal, setShowModal } = useContext(ModalContext);
   const driverContext = useContext(DriverContext);
+  const [tarif, setTarif] = useState();
 
   const [newDriver, setNewDriver] = useState<IDriver>({
     id: null,
@@ -15,7 +16,7 @@ const ModalAddDriver = () => {
     lastName: "",
     birthday: "2007-01-01",
     subscriptionDate: "2007-01-01",
-    accidentNumber: null,
+    accidentNumber: 0,
   });
 
   const createId = () => {
