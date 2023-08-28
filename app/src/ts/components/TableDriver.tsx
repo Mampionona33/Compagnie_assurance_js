@@ -28,7 +28,7 @@ const TableDriver = () => {
 
   const createHeaders = () => {
     return headers.map((header, headerKey) => (
-      <th key={headerKey} className="table-dark text-capitalize">
+      <th scope="col" key={headerKey} className="table-dark text-capitalize">
         {header}
       </th>
     ));
@@ -45,9 +45,10 @@ const TableDriver = () => {
   const createBody = () => {
     if (driverContext.driver.length > 0) {
       return driverContext.driver.map((item, driverKey) => {
-        console.log(driverContext.driver);
-
         const age = calculateAge(item.birthday);
+
+        console.log(item);
+
         return (
           <tr key={driverKey}>
             <td>{item.name}</td>
@@ -58,12 +59,15 @@ const TableDriver = () => {
             <td>
               <input
                 type="number"
-                value={item.accidentNumber ? item.accidentNumber : 0}
+                value={item.accidentNumber !== null ? item.accidentNumber : 0}
                 onChange={(event) => {
                   const updatedDriver = {
                     ...item,
                     accidentNumber: parseInt(event.target.value),
                   };
+
+                  console.log(updatedDriver);
+
                   const updatedDrivers = driverContext.driver.map(
                     (prevDriver) =>
                       prevDriver.id === item.id ? updatedDriver : prevDriver
@@ -85,7 +89,7 @@ const TableDriver = () => {
   };
 
   return (
-    <table className="table table-striped shadow-sm">
+    <table className="table shadow-sm table-hover">
       <thead>
         <tr>{createHeaders()}</tr>
       </thead>

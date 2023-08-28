@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { DriverContext, ModalContext } from "../App";
-import Form from "react-bootstrap/Form"; 
+import Form from "react-bootstrap/Form";
 import { IDriver } from "./TableDriver";
 
 const ModalAddDriver = () => {
@@ -13,60 +13,91 @@ const ModalAddDriver = () => {
     id: null,
     name: "",
     lastName: "",
-    birthday: "",
-    subscriptionDate: "",
+    birthday: "2007-01-01",
+    subscriptionDate: "2007-01-01",
     accidentNumber: null,
   });
 
-  
   const createId = () => {
-    const existingIds = driverContext.driver.map(driver => driver.id || 0);
+    const existingIds = driverContext.driver.map((driver) => driver.id || 0);
     const maxId = Math.max(...existingIds);
-    return maxId + 1;
-  }
+    return maxId === -Infinity ? 1 : maxId + 1;
+  };
 
   const handleClose = () => {
     setNewDriver({
       id: null,
       name: "",
       lastName: "",
-      birthday: "",
-      subscriptionDate: "",
+      birthday: "2007-01-01",
+      subscriptionDate: "2007-01-01",
       accidentNumber: null,
     });
     setShowModal(false);
   };
 
   const handleSave = () => {
-    if (newDriver.name && newDriver.lastName && newDriver.birthday && newDriver.subscriptionDate) {
-      const newId = createId(); 
-      driverContext.setDriver(prevDrivers => [...prevDrivers, { ...newDriver, id: newId }]);
+    if (
+      newDriver.name &&
+      newDriver.lastName &&
+      newDriver.birthday &&
+      newDriver.subscriptionDate
+    ) {
+      const newId = createId();
+      driverContext.setDriver((prevDrivers) => [
+        ...prevDrivers,
+        { ...newDriver, id: newId },
+      ]);
       handleClose();
     }
   };
 
-
   const handleNameChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    setNewDriver(prevDriver => ({ ...prevDriver, name: ev.target.value }));
+    setNewDriver((prevDriver) => ({ ...prevDriver, name: ev.target.value }));
   };
 
   const createBody = () => (
     <Form>
       <Form.Group className="sm-3" controlId="formAddDriver.name">
         <Form.Label>Nom</Form.Label>
-        <Form.Control type="text" placeholder="Nom" autoFocus onChange={handleNameChange} value={newDriver.name} />
+        <Form.Control
+          type="text"
+          placeholder="Nom"
+          autoFocus
+          onChange={handleNameChange}
+          value={newDriver.name}
+        />
       </Form.Group>
       <Form.Group className="sm-3" controlId="formAddDriver.lastName">
         <Form.Label>Prénom</Form.Label>
-        <Form.Control type="text" placeholder="Prénom" onChange={(ev) => setNewDriver({ ...newDriver, lastName: ev.target.value })} value={newDriver.lastName} />
+        <Form.Control
+          type="text"
+          placeholder="Prénom"
+          onChange={(ev) =>
+            setNewDriver({ ...newDriver, lastName: ev.target.value })
+          }
+          value={newDriver.lastName}
+        />
       </Form.Group>
       <Form.Group className="sm-3" controlId="formAddDriver.birthday">
         <Form.Label>Date de naissance</Form.Label>
-        <Form.Control type="date"  onChange={(ev) => setNewDriver({ ...newDriver, birthday: ev.target.value })} value={newDriver.birthday} />
+        <Form.Control
+          type="date"
+          onChange={(ev) =>
+            setNewDriver({ ...newDriver, birthday: ev.target.value })
+          }
+          value={newDriver.birthday}
+        />
       </Form.Group>
       <Form.Group className="sm-3" controlId="formAddDriver.subscriptionDate">
         <Form.Label>Date d'adhésion</Form.Label>
-        <Form.Control type="date" onChange={(ev) => setNewDriver({ ...newDriver, subscriptionDate: ev.target.value })} value={newDriver.subscriptionDate} />
+        <Form.Control
+          type="date"
+          onChange={(ev) =>
+            setNewDriver({ ...newDriver, subscriptionDate: ev.target.value })
+          }
+          value={newDriver.subscriptionDate}
+        />
       </Form.Group>
     </Form>
   );
