@@ -1,8 +1,17 @@
 import React, { createContext, useState } from "react";
-import TableDriver from "./components/TableDriver";
+import TableDriver, { IDriver, driverInitialState } from "./components/TableDriver";
 import ModalAddDriver from "./components/ModalAddDriver";
 
-export const DriverContext = createContext([]);
+interface IDriverContext {
+  driver: IDriver[];
+  setDriver: React.Dispatch<React.SetStateAction<IDriver[]>>;
+}
+
+export const DriverContext = createContext<IDriverContext>({
+  driver: [],
+  setDriver: () => {},
+});
+
 export const ModalContext = createContext<{
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -12,18 +21,18 @@ export const ModalContext = createContext<{
 });
 
 const App = () => {
-  const [driver, setDriver] = useState([]);
+  const [driver, setDriver] = useState<IDriver[]>(driverInitialState);
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <DriverContext.Provider value={driver}>
+    <DriverContext.Provider value={{ driver, setDriver }}>
       <ModalContext.Provider value={{ showModal, setShowModal }}>
         <div className="d-flex flex-column align-items-start gap-2">
           <input
             className="btn btn-primary"
             type="button"
             value="Ajouter"
-            onClick={() => setShowModal(true)} // Affiche la modal lors du clic sur le bouton
+            onClick={() => setShowModal(true)}
           />
           <TableDriver />
           <ModalAddDriver />
