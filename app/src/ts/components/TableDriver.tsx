@@ -7,6 +7,7 @@ export interface IDriver {
   name: string;
   lastName: string;
   birthday: string;
+  dateObtDriverLicense: string;
   subscriptionDate: string;
   accidentNumber: number | null;
 }
@@ -17,18 +18,24 @@ const TableDriver = () => {
   const driverContext = useContext(DriverContext);
 
   const headers: string[] = [
-    "nom",
-    "prénom",
-    "date de naissance",
-    "date d'adhésion",
-    "âge",
-    "nombre d'accident",
-    "tarif",
+    "Name",
+    "Last Name",
+    "Birthday",
+    "Driver's License Date",
+    "Subscription Date",
+    "Age",
+    "Accident Count",
+    "Offer Type",
   ];
 
   const createHeaders = () => {
     return headers.map((header, headerKey) => (
-      <th scope="col" key={headerKey} className="table-dark text-capitalize">
+      <th
+        scope="col"
+        key={headerKey}
+        className="table-dark text-capitalize text-left align-top"
+        style={{ verticalAlign: "top" }}
+      >
         {header}
       </th>
     ));
@@ -46,31 +53,46 @@ const TableDriver = () => {
     return 0;
   };
 
-  const calculateOfferType = (age: number, accidentNumber: number | null) => {
+  const calculateOfferType = (
+    age: number,
+    accidentNumber: number | null,
+    agePermis: number,
+    seniority: number
+  ) => {
     if (accidentNumber === null) {
       return "";
     }
 
     let offerType = "";
     if (age < 25) {
-      if (accidentNumber === 0) {
-        offerType = "bleu";
-      } else if (accidentNumber === 1) {
-        offerType = "vert";
-      } else if (accidentNumber === 2) {
-        offerType = "orange";
+      if (agePermis < 2) {
+        offerType = accidentNumber === 0 ? "Rouge" : "Refusé";
       } else {
-        offerType = "refusé";
+        offerType =
+          accidentNumber === 0
+            ? "Orange"
+            : accidentNumber === 1
+            ? "Rouge"
+            : "Refusé";
       }
     } else if (age >= 25) {
-      if (accidentNumber === 0) {
-        offerType = "vert";
-      } else if (accidentNumber === 1) {
-        offerType = "orange";
-      } else if (accidentNumber === 2) {
-        offerType = "rouge";
+      if (agePermis < 2) {
+        offerType =
+          accidentNumber === 0
+            ? "Orange"
+            : accidentNumber === 1
+            ? "Rouge"
+            : "Refusé";
       } else {
-        offerType = "refusé";
+        if (accidentNumber === 0) {
+          offerType = seniority > 5 ? "Bleu" : "Vert";
+        } else if (accidentNumber === 1) {
+          offerType = seniority > 5 ? "Vert" : "Orange";
+        } else if (accidentNumber === 2) {
+          offerType = seniority > 5 ? "Orange" : "Rouge";
+        } else {
+          offerType = "Refusé";
+        }
       }
     }
 
@@ -81,19 +103,21 @@ const TableDriver = () => {
     if (driverContext.driver.length > 0) {
       return driverContext.driver.map((item, driverKey) => {
         const age = calculateAge(item.birthday);
-
-        console.log(item);
+        const agePermis = calculateAge(item.dateObtDriverLicense);
+        const seniority = calculateAge(item.subscriptionDate);
 
         return (
           <tr key={driverKey}>
             <td>{item.name}</td>
             <td>{item.lastName}</td>
             <td>{item.birthday}</td>
+            <td>{item.dateObtDriverLicense}</td>
             <td>{item.subscriptionDate}</td>
             <td>{age} ans</td>
             <td>
               <input
                 type="number"
+                min={0}
                 value={item.accidentNumber !== null ? item.accidentNumber : 0}
                 onChange={(event) => {
                   const updatedDriver = {
@@ -109,7 +133,14 @@ const TableDriver = () => {
                 }}
               />
             </td>
-            <td>{calculateOfferType(age, item.accidentNumber)}</td>
+            <td>
+              {calculateOfferType(
+                age,
+                item.accidentNumber,
+                agePermis,
+                seniority
+              )}
+            </td>
           </tr>
         );
       });

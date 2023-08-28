@@ -14,8 +14,9 @@ const ModalAddDriver = () => {
     id: null,
     name: "",
     lastName: "",
+    dateObtDriverLicense: "2020-01-01",
     birthday: "2007-01-01",
-    subscriptionDate: "2007-01-01",
+    subscriptionDate: "2021-01-01",
     accidentNumber: 0,
   });
 
@@ -30,9 +31,10 @@ const ModalAddDriver = () => {
       id: null,
       name: "",
       lastName: "",
+      dateObtDriverLicense: "2020-01-01",
       birthday: "2007-01-01",
-      subscriptionDate: "2007-01-01",
-      accidentNumber: null,
+      subscriptionDate: "2021-01-01",
+      accidentNumber: 0,
     });
     setShowModal(false);
   };
@@ -47,7 +49,7 @@ const ModalAddDriver = () => {
       const newId = createId();
       driverContext.setDriver((prevDrivers) => [
         ...prevDrivers,
-        { ...newDriver, id: newId },
+        { ...newDriver, id: newId, accidentNumber: 0 },
       ]);
       handleClose();
     }
@@ -88,6 +90,23 @@ const ModalAddDriver = () => {
             setNewDriver({ ...newDriver, birthday: ev.target.value })
           }
           value={newDriver.birthday}
+        />
+      </Form.Group>
+
+      <Form.Group
+        className="sm-3"
+        controlId="formAddDriver.dateObtDriverLicense"
+      >
+        <Form.Label>Date d'obtention du pérmis</Form.Label>
+        <Form.Control
+          type="date"
+          onChange={(ev) =>
+            setNewDriver({
+              ...newDriver,
+              dateObtDriverLicense: ev.target.value,
+            })
+          }
+          value={newDriver.dateObtDriverLicense}
         />
       </Form.Group>
       <Form.Group className="sm-3" controlId="formAddDriver.subscriptionDate">
