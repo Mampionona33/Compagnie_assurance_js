@@ -99,12 +99,40 @@ const TableDriver = () => {
     return offerType;
   };
 
+  const getOfferTypeStyle = (offerTypeClass: string) => {
+    let backgroundColor = "transparent";
+    switch (offerTypeClass) {
+      case "bleu":
+        backgroundColor = "blue";
+        break;
+      case "vert":
+        backgroundColor = "green";
+        break;
+      case "orange":
+        backgroundColor = "orange";
+        break;
+      case "rouge":
+        backgroundColor = "red";
+        break;
+      default:
+        break;
+    }
+  
+    return {
+      backgroundColor,
+      color: "white",
+      fontWeight: "bold",
+    };
+  };
+
   const createBody = () => {
     if (driverContext.driver.length > 0) {
       return driverContext.driver.map((item, driverKey) => {
         const age = calculateAge(item.birthday);
         const agePermis = calculateAge(item.dateObtDriverLicense);
         const seniority = calculateAge(item.subscriptionDate);
+        const offerType = calculateOfferType(age, item.accidentNumber, agePermis, seniority);
+        const offerTypeClass = offerType.toLowerCase();
 
         return (
           <tr key={driverKey}>
@@ -133,13 +161,8 @@ const TableDriver = () => {
                 }}
               />
             </td>
-            <td>
-              {calculateOfferType(
-                age,
-                item.accidentNumber,
-                agePermis,
-                seniority
-              )}
+            <td style={getOfferTypeStyle(offerTypeClass)}>
+              {offerType}
             </td>
           </tr>
         );
