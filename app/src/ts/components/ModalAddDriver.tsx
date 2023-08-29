@@ -62,20 +62,20 @@ const ModalAddDriver = () => {
   const createBody = () => (
     <Form>
       <Form.Group className="sm-3" controlId="formAddDriver.name">
-        <Form.Label>Nom</Form.Label>
+        <Form.Label>Name</Form.Label>
         <Form.Control
           type="text"
-          placeholder="Nom"
+          placeholder="Name"
           autoFocus
           onChange={handleNameChange}
           value={newDriver.name}
         />
       </Form.Group>
       <Form.Group className="sm-3" controlId="formAddDriver.lastName">
-        <Form.Label>Prénom</Form.Label>
+        <Form.Label>Last Name</Form.Label>
         <Form.Control
           type="text"
-          placeholder="Prénom"
+          placeholder="Last Name"
           onChange={(ev) =>
             setNewDriver({ ...newDriver, lastName: ev.target.value })
           }
@@ -83,7 +83,7 @@ const ModalAddDriver = () => {
         />
       </Form.Group>
       <Form.Group className="sm-3" controlId="formAddDriver.birthday">
-        <Form.Label>Date de naissance</Form.Label>
+        <Form.Label>Birthday</Form.Label>
         <Form.Control
           type="date"
           onChange={(ev) =>
@@ -97,7 +97,7 @@ const ModalAddDriver = () => {
         className="sm-3"
         controlId="formAddDriver.dateObtDriverLicense"
       >
-        <Form.Label>Date d'obtention du pérmis</Form.Label>
+        <Form.Label>Driver's License Date</Form.Label>
         <Form.Control
           type="date"
           onChange={(ev) =>
@@ -110,7 +110,7 @@ const ModalAddDriver = () => {
         />
       </Form.Group>
       <Form.Group className="sm-3" controlId="formAddDriver.subscriptionDate">
-        <Form.Label>Date d'adhésion</Form.Label>
+        <Form.Label>Subscription Date</Form.Label>
         <Form.Control
           type="date"
           onChange={(ev) =>
@@ -130,10 +130,10 @@ const ModalAddDriver = () => {
       <Modal.Body>{createBody()}</Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          Fermer
+          Cancel
         </Button>
         <Button variant="primary" onClick={handleSave}>
-          Enregistrer
+          Save
         </Button>
       </Modal.Footer>
     </Modal>
