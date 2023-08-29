@@ -31,7 +31,7 @@ const App = () => {
           <input
             className="btn btn-primary"
             type="button"
-            value="Ajouter"
+            value="Add"
             onClick={() => setShowModal(true)}
           />
           <TableDriver />
