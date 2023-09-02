@@ -1,6 +1,13 @@
 import React, { useContext } from "react";
 import { DriverContext } from "../App";
-import { formatDistanceToNow, isValid } from "date-fns";
+import calculateOfferType from "../utils/calculateOfferType";
+import {
+  blueOffer,
+  greenOffer,
+  orangeOffer,
+  redOffer,
+} from "../utils/offertTypes";
+import calculateAge from "../utils/calculateAge";
 
 export interface IDriver {
   id: number | null;
@@ -41,63 +48,63 @@ const TableDriver = () => {
     ));
   };
 
-  const calculateAge = (date: string) => {
-    if (isValid(new Date(date))) {
-      const ageString = formatDistanceToNow(new Date(date), {
-        addSuffix: false,
-      }).match(/\d+/)?.[0];
-      if (ageString) {
-        return parseInt(ageString);
-      }
-    }
-    return 0;
-  };
+  // const calculateAge = (date: string) => {
+  //   if (isValid(new Date(date))) {
+  //     const ageString = formatDistanceToNow(new Date(date), {
+  //       addSuffix: false,
+  //     }).match(/\d+/)?.[0];
+  //     if (ageString) {
+  //       return parseInt(ageString);
+  //     }
+  //   }
+  //   return 0;
+  // };
 
-  const calculateOfferType = (
-    age: number,
-    accidentNumber: number | null,
-    agePermis: number,
-    seniority: number
-  ) => {
-    if (accidentNumber === null) {
-      return "";
-    }
+  // const calculateOfferType = (
+  //   age: number,
+  //   accidentNumber: number | null,
+  //   agePermis: number,
+  //   seniority: number
+  // ) => {
+  //   if (accidentNumber === null) {
+  //     return "";
+  //   }
 
-    let offerType = "";
-    if (age < 25) {
-      if (agePermis < 2) {
-        offerType = accidentNumber === 0 ? "Rouge" : "Refusé";
-      } else {
-        offerType =
-          accidentNumber === 0
-            ? "Orange"
-            : accidentNumber === 1
-            ? "Rouge"
-            : "Refusé";
-      }
-    } else if (age >= 25) {
-      if (agePermis < 2) {
-        offerType =
-          accidentNumber === 0
-            ? "Orange"
-            : accidentNumber === 1
-            ? "Rouge"
-            : "Refusé";
-      } else {
-        if (accidentNumber === 0) {
-          offerType = seniority > 5 ? "Bleu" : "Vert";
-        } else if (accidentNumber === 1) {
-          offerType = seniority > 5 ? "Vert" : "Orange";
-        } else if (accidentNumber === 2) {
-          offerType = seniority > 5 ? "Orange" : "Rouge";
-        } else {
-          offerType = "Refusé";
-        }
-      }
-    }
+  //   let offerType = "";
+  //   if (age < 25) {
+  //     if (agePermis < 2) {
+  //       offerType = accidentNumber === 0 ? "Rouge" : "Refusé";
+  //     } else {
+  //       offerType =
+  //         accidentNumber === 0
+  //           ? "Orange"
+  //           : accidentNumber === 1
+  //           ? "Rouge"
+  //           : "Refusé";
+  //     }
+  //   } else if (age >= 25) {
+  //     if (agePermis < 2) {
+  //       offerType =
+  //         accidentNumber === 0
+  //           ? "Orange"
+  //           : accidentNumber === 1
+  //           ? "Rouge"
+  //           : "Refusé";
+  //     } else {
+  //       if (accidentNumber === 0) {
+  //         offerType = seniority > 5 ? "Bleu" : "Vert";
+  //       } else if (accidentNumber === 1) {
+  //         offerType = seniority > 5 ? "Vert" : "Orange";
+  //       } else if (accidentNumber === 2) {
+  //         offerType = seniority > 5 ? "Orange" : "Rouge";
+  //       } else {
+  //         offerType = "Refusé";
+  //       }
+  //     }
+  //   }
 
-    return offerType;
-  };
+  //   return offerType;
+  // };
 
   const getOfferTypeStyle = (offerTypeClass: string) => {
     let backgroundColor = "transparent";
@@ -117,7 +124,7 @@ const TableDriver = () => {
       default:
         break;
     }
-  
+
     return {
       backgroundColor,
       color: "white",
@@ -131,8 +138,13 @@ const TableDriver = () => {
         const age = calculateAge(item.birthday);
         const agePermis = calculateAge(item.dateObtDriverLicense);
         const seniority = calculateAge(item.subscriptionDate);
-        const offerType = calculateOfferType(age, item.accidentNumber, agePermis, seniority);
-        const offerTypeClass = offerType.toLowerCase();
+        // const offerType = calculateOfferType(
+        //   age,
+        //   item.accidentNumber,
+        //   agePermis,
+        //   seniority
+        // );
+        // const offerTypeClass = offerType.toLowerCase();
 
         return (
           <tr key={driverKey}>
@@ -161,8 +173,14 @@ const TableDriver = () => {
                 }}
               />
             </td>
-            <td style={getOfferTypeStyle(offerTypeClass)}>
-              {offerType}
+            <td>
+              {calculateOfferType(
+                age,
+                item.accidentNumber,
+                agePermis,
+                seniority,
+                [blueOffer, greenOffer, orangeOffer, redOffer]
+              )}
             </td>
           </tr>
         );

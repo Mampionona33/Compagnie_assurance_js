@@ -14,9 +14,9 @@ const ModalAddDriver = () => {
     id: null,
     name: "",
     lastName: "",
-    dateObtDriverLicense: "2020-01-01",
+    dateObtDriverLicense: "2023-01-01",
     birthday: "2007-01-01",
-    subscriptionDate: "2021-01-01",
+    subscriptionDate: "2023-01-01",
     accidentNumber: 0,
   });
 
