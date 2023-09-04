@@ -4,10 +4,23 @@ export interface IOffreAssurance {
   accidentNumber: number;
   fidelity: number;
   active: () => boolean;
-  calculerTarif(): string;
+  calculerTarif(): Itarif;
 }
 
-export enum tarifColors {
+export interface Itarif{
+  name: tarifName;
+  style: tarifStyle;
+}
+
+export enum tarifStyle {
+  Bleu = "bg-primary text-white",
+  Vert = "bg-success text-white",
+  Orange = "bg-warning text-white",
+  Rouge = "bg-danger text-white",
+  Refuse = "bg-secondary text-white",
+}
+
+export enum tarifName {
   Bleu = "Bleu",
   Vert = "Vert",
   Orange = "Orange",
@@ -36,14 +49,14 @@ export class Refuse implements IOffreAssurance {
     return true;
   }
 
-  calculerTarif(): string {
+  calculerTarif(): Itarif {
     if (this.fidelity > 5) {
       if (this.accidentNumber > 3) {
-        return tarifColors.Refuse;
+        return {name:tarifName.Refuse,style:tarifStyle.Refuse}
       }
-      return tarifColors.Rouge;
+      return {name:tarifName.Rouge,style:tarifStyle.Rouge}
     }
-    return tarifColors.Refuse;
+    return {name:tarifName.Refuse, style:tarifStyle.Refuse}
   }
 }
 
@@ -80,11 +93,11 @@ export class RedOffer implements IOffreAssurance {
     return false;
   }
 
-  calculerTarif(): string {
+  calculerTarif(): Itarif {
     if (this.fidelity > 5) {
-      return tarifColors.Orange;
+      return {name:tarifName.Orange, style:tarifStyle.Orange}
     }
-    return tarifColors.Rouge;
+    return {name:tarifName.Rouge, style:tarifStyle.Rouge}
   }
 }
 
@@ -118,11 +131,11 @@ export class OrangeOffer implements IOffreAssurance {
     }
     return false;
   }
-  calculerTarif(): string {
+  calculerTarif(): Itarif {
     if (this.fidelity > 5) {
-      return tarifColors.Vert;
+      return {name:tarifName.Vert,style:tarifStyle.Vert}
     }
-    return tarifColors.Orange;
+    return {name : tarifName.Orange, style:tarifStyle.Orange}
   }
 }
 
@@ -154,11 +167,11 @@ export class GreenOffer implements IOffreAssurance {
     }
     return false;
   }
-  calculerTarif(): string {
+  calculerTarif(): Itarif {
     if (this.fidelity > 5) {
-      return tarifColors.Bleu;
+      return {name:tarifName.Bleu, style:tarifStyle.Bleu}
     }
-    return tarifColors.Vert;
+    return {name:tarifName.Vert, style:tarifStyle.Vert}
   }
 }
 
@@ -182,11 +195,10 @@ export class OffreManager {
     }
   }
 
-  calculerTarif(): string {
+  calculerTarif(): Itarif {
     if (this.offer) {
-      console.log(this.offer);
-      return this.offer.calculerTarif();
+      return {name: this.offer.calculerTarif().name, style:this.offer.calculerTarif().style};
     }
-    return tarifColors.Refuse;
+    return {name:tarifName.Refuse, style:tarifStyle.Refuse}
   }
 }

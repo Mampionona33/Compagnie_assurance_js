@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { DriverContext } from "../App";
 // import calculateOfferType from "../utils/calculateOfferType";
-import { OffreManager } from "../utils/offertTypes";
+import { Itarif, OffreManager } from "../utils/offertTypes";
 import calculateAge from "../utils/calculateAge";
 
 export interface IDriver {
@@ -41,18 +41,6 @@ const TableDriver = () => {
       </th>
     ));
   };
-
-  // const calculateAge = (date: string) => {
-  //   if (isValid(new Date(date))) {
-  //     const ageString = formatDistanceToNow(new Date(date), {
-  //       addSuffix: false,
-  //     }).match(/\d+/)?.[0];
-  //     if (ageString) {
-  //       return parseInt(ageString);
-  //     }
-  //   }
-  //   return 0;
-  // };
 
   // const calculateOfferType = (
   //   age: number,
@@ -100,45 +88,19 @@ const TableDriver = () => {
   //   return offerType;
   // };
 
-  const getOfferTypeStyle = (offerTypeClass: string) => {
-    let backgroundColor = "transparent";
-    switch (offerTypeClass) {
-      case "bleu":
-        backgroundColor = "blue";
-        break;
-      case "vert":
-        backgroundColor = "green";
-        break;
-      case "orange":
-        backgroundColor = "orange";
-        break;
-      case "rouge":
-        backgroundColor = "red";
-        break;
-      default:
-        break;
-    }
-
-    return {
-      backgroundColor,
-      color: "white",
-      fontWeight: "bold",
-    };
-  };
-
   const calculateOfferType = (
     age,
     accidentNumber,
     agePermis,
     seniority
-  ): string => {
+  ): Itarif => {
     const offreManager = new OffreManager(
       age,
       agePermis,
       accidentNumber,
       seniority
     );
-    return offreManager.calculerTarif();
+    return {name: offreManager.calculerTarif().name, style:offreManager.calculerTarif().style};
   };
 
   const createBody = () => {
@@ -175,13 +137,16 @@ const TableDriver = () => {
                 }}
               />
             </td>
-            <td>
+            <td className={calculateOfferType(age,
+                item.accidentNumber,
+                agePermis,
+                seniority).style} >
               {calculateOfferType(
                 age,
                 item.accidentNumber,
                 agePermis,
                 seniority
-              )}
+              ).name}
             </td>
           </tr>
         );
