@@ -1,21 +1,27 @@
-import { createOffer } from "./createOffer";
+import { IConducteur, Offer, createOffer } from "./createOffer";
 import {
   isAccidentNumber1,
   isAccidentNumber2,
-  isAccidentNumber3,
   isAccidentNumberNull,
   isAgePermisUnder2,
   isAgeUnder25,
   isSeniorityUpper5,
 } from "./offertValidation";
 
-interface IOfferConditions {
+export interface IOfferConditions {
   (
     age: number,
     agePermis: number,
     accidentNumber: number,
-    seniority?: number
+    seniority: number
   ): boolean;
+}
+
+function shouldSwitchToBetterOffer(conducteur: IConducteur): boolean {
+  if (isSeniorityUpper5(conducteur.seniority)) {
+    return true;
+  }
+  return false;
 }
 
 const redOfferConditions: IOfferConditions[] = [];
@@ -56,9 +62,31 @@ greenOfferConditions.push(
     isAccidentNumberNull(accidentNumber)
 );
 
-blueOfferConditions.push();
+// blueOfferConditions.push(
+//   (age, agePermis, accidentNumber, seniority) =>
+//     isSeniorityUpper5(seniority) &&
+//     greenOfferConditions.some((condition) =>
+//       condition(age, agePermis, accidentNumber, seniority)
+//     )
+// );
 
-export const redOffer = createOffer("Rouge", redOfferConditions);
-export const orangeOffer = createOffer("Orange", orangeOfferConditions);
-export const greenOffer = createOffer("Vert", greenOfferConditions);
-export const blueOffer = createOffer("Bleu", blueOfferConditions);
+export const redOffer = createOffer(
+  "Rouge",
+  redOfferConditions,
+  shouldSwitchToBetterOffer
+);
+export const orangeOffer = createOffer(
+  "Orange",
+  orangeOfferConditions,
+  shouldSwitchToBetterOffer
+);
+export const greenOffer = createOffer(
+  "Vert",
+  greenOfferConditions,
+  shouldSwitchToBetterOffer
+);
+export const blueOffer = createOffer(
+  "Bleu",
+  blueOfferConditions,
+  shouldSwitchToBetterOffer
+);

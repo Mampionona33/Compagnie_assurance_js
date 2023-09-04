@@ -23,6 +23,7 @@ export const driverInitialState: IDriver[] = [];
 
 const TableDriver = () => {
   const driverContext = useContext(DriverContext);
+  const offers = [blueOffer, greenOffer, orangeOffer, redOffer];
 
   const headers: string[] = [
     "Name",
@@ -179,7 +180,7 @@ const TableDriver = () => {
                 item.accidentNumber,
                 agePermis,
                 seniority,
-                [blueOffer, greenOffer, orangeOffer, redOffer]
+                offers
               )}
             </td>
           </tr>

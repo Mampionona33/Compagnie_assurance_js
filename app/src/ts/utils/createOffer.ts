@@ -1,37 +1,38 @@
+import { IOfferConditions } from "./offertTypes";
+
 export interface Offer {
   name: string;
-  validate: (
-    age: number,
-    agePermis: number,
-    accidentNumber: number,
-    seniority?: number
-  ) => boolean;
+  validate: (conducteur: IConducteur) => boolean;
 }
 
-export const createOffer = (
+export interface IConducteur {
+  age: number;
+  permisDepuis: number;
+  accidents: number;
+  seniority: number;
+}
+
+export const colorTransitions: Record<string, string> = {};
+
+export function createOffer(
   name: string,
-  conditions: ((
-    age: number,
-    agePermis: number,
-    accidentNumber: number,
-    seniority?: number
-  ) => boolean)[]
-): Offer => {
-  const validate = (
-    age: number,
-    agePermis: number,
-    accidentNumber: number,
-    seniority?: number
-  ) => {
-    for (const condition of conditions) {
-      console.log(condition(age, agePermis, accidentNumber, seniority));
+  conditions: IOfferConditions[],
+  checkFideliteFn: (conducteur: IConducteur) => boolean
+): Offer {
+  return {
+    name,
+    validate: (conducteur: IConducteur) => {
+      const { age, permisDepuis, accidents, seniority } = conducteur;
 
-      if (condition(age, agePermis, accidentNumber, seniority)) {
-        return true;
+      for (const condition of conditions) {
+        if (condition(age, permisDepuis, accidents, seniority)) {
+          if (checkFideliteFn(conducteur)) {
+            return true;
+          }
+          return false;
+        }
       }
-    }
-    return false;
+      return false;
+    },
   };
-
-  return { name, validate };
-};
+}

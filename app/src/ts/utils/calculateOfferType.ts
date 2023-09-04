@@ -12,7 +12,14 @@ const calculateOfferType = (
   }
 
   for (const offer of offers) {
-    if (offer.validate(age, agePermis, accidentNumber, seniority)) {
+    if (
+      offer.validate({
+        age: age,
+        permisDepuis: agePermis,
+        accidents: accidentNumber,
+        seniority: seniority,
+      })
+    ) {
       return offer.name;
     }
   }
