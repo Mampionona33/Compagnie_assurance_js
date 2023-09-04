@@ -1,12 +1,7 @@
 import React, { useContext } from "react";
 import { DriverContext } from "../App";
-import calculateOfferType from "../utils/calculateOfferType";
-import {
-  blueOffer,
-  greenOffer,
-  orangeOffer,
-  redOffer,
-} from "../utils/offertTypes";
+// import calculateOfferType from "../utils/calculateOfferType";
+import { OffreManager } from "../utils/offertTypes";
 import calculateAge from "../utils/calculateAge";
 
 export interface IDriver {
@@ -23,8 +18,6 @@ export const driverInitialState: IDriver[] = [];
 
 const TableDriver = () => {
   const driverContext = useContext(DriverContext);
-  const offers = [blueOffer, greenOffer, orangeOffer, redOffer];
-
   const headers: string[] = [
     "Name",
     "Last Name",
@@ -133,19 +126,27 @@ const TableDriver = () => {
     };
   };
 
+  const calculateOfferType = (
+    age,
+    accidentNumber,
+    agePermis,
+    seniority
+  ): string => {
+    const offreManager = new OffreManager(
+      age,
+      agePermis,
+      accidentNumber,
+      seniority
+    );
+    return offreManager.calculerTarif();
+  };
+
   const createBody = () => {
     if (driverContext.driver.length > 0) {
       return driverContext.driver.map((item, driverKey) => {
         const age = calculateAge(item.birthday);
         const agePermis = calculateAge(item.dateObtDriverLicense);
         const seniority = calculateAge(item.subscriptionDate);
-        // const offerType = calculateOfferType(
-        //   age,
-        //   item.accidentNumber,
-        //   agePermis,
-        //   seniority
-        // );
-        // const offerTypeClass = offerType.toLowerCase();
 
         return (
           <tr key={driverKey}>
@@ -179,8 +180,7 @@ const TableDriver = () => {
                 age,
                 item.accidentNumber,
                 agePermis,
-                seniority,
-                offers
+                seniority
               )}
             </td>
           </tr>

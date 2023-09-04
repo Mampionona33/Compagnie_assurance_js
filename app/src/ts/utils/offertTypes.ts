@@ -1,92 +1,192 @@
-import { IConducteur, Offer, createOffer } from "./createOffer";
-import {
-  isAccidentNumber1,
-  isAccidentNumber2,
-  isAccidentNumberNull,
-  isAgePermisUnder2,
-  isAgeUnder25,
-  isSeniorityUpper5,
-} from "./offertValidation";
-
-export interface IOfferConditions {
-  (
-    age: number,
-    agePermis: number,
-    accidentNumber: number,
-    seniority: number
-  ): boolean;
+export interface IOffreAssurance {
+  driverAge: number;
+  licenseAge: number;
+  accidentNumber: number;
+  fidelity: number;
+  active: () => boolean;
+  calculerTarif(): string;
 }
 
-function shouldSwitchToBetterOffer(conducteur: IConducteur): boolean {
-  if (isSeniorityUpper5(conducteur.seniority)) {
+export enum tarifColors {
+  Bleu = "Bleu",
+  Vert = "Vert",
+  Orange = "Orange",
+  Rouge = "Rouge",
+  Refuse = "Réfusé",
+}
+
+export class Refuse implements IOffreAssurance {
+  driverAge: number;
+  licenseAge: number;
+  accidentNumber: number;
+  fidelity: number;
+  constructor(
+    driverAge: number,
+    licenseAge: number,
+    accidentNumber: number,
+    fidelity: number
+  ) {
+    this.driverAge = driverAge;
+    this.licenseAge = licenseAge;
+    this.accidentNumber = accidentNumber;
+    this.fidelity = fidelity;
+  }
+
+  active(): boolean {
     return true;
   }
-  return false;
+
+  calculerTarif(): string {
+    if (this.fidelity > 5) {
+      if (this.accidentNumber > 3) {
+        return tarifColors.Refuse;
+      }
+      return tarifColors.Rouge;
+    }
+    return tarifColors.Refuse;
+  }
 }
 
-const redOfferConditions: IOfferConditions[] = [];
-const orangeOfferConditions: IOfferConditions[] = [];
-const greenOfferConditions: IOfferConditions[] = [];
-const blueOfferConditions: IOfferConditions[] = [];
+export class RedOffer implements IOffreAssurance {
+  driverAge: number;
+  licenseAge: number;
+  accidentNumber: number;
+  fidelity: number;
 
-redOfferConditions.push(
-  (age, agePermis, accidentNumber, seniority) =>
-    (isAgeUnder25(age) &&
-      isAgePermisUnder2(agePermis) &&
-      isAccidentNumberNull(accidentNumber)) ||
-    (isAgeUnder25(age) &&
-      !isAgePermisUnder2(agePermis) &&
-      isAccidentNumber1(accidentNumber)) ||
-    (!isAgeUnder25(age) &&
-      !isAgePermisUnder2(agePermis) &&
-      isAccidentNumber2(accidentNumber))
-);
+  constructor(
+    driverAge: number,
+    licenseAge: number,
+    accidentNumber: number,
+    fidelity: number
+  ) {
+    this.driverAge = driverAge;
+    this.licenseAge = licenseAge;
+    this.accidentNumber = accidentNumber;
+    this.fidelity = fidelity;
+  }
 
-orangeOfferConditions.push(
-  (age, agePermis, accidentNumber, seniority) =>
-    (isAgeUnder25(age) &&
-      isAccidentNumberNull(accidentNumber) &&
-      !isAgePermisUnder2(agePermis)) ||
-    (!isAgeUnder25(age) &&
-      isAgePermisUnder2(agePermis) &&
-      isAccidentNumberNull(accidentNumber)) ||
-    (!isAgeUnder25(age) &&
-      !isAgePermisUnder2(agePermis) &&
-      isAccidentNumber1(accidentNumber))
-);
+  active(): boolean {
+    if (
+      (this.accidentNumber === 0 &&
+        this.licenseAge < 2 &&
+        (this.driverAge < 25 || this.driverAge > 25)) ||
+      (this.accidentNumber === 1 &&
+        ((this.licenseAge > 2 && this.driverAge < 25) ||
+          (this.driverAge > 25 && this.licenseAge < 2))) ||
+      (this.accidentNumber === 2 && this.licenseAge > 2 && this.driverAge > 25)
+    ) {
+      return true;
+    }
+    return false;
+  }
 
-greenOfferConditions.push(
-  (age, agePermis, accidentNumber, seniority) =>
-    !isAgeUnder25(age) &&
-    !isAgePermisUnder2(agePermis) &&
-    isAccidentNumberNull(accidentNumber)
-);
+  calculerTarif(): string {
+    if (this.fidelity > 5) {
+      return tarifColors.Orange;
+    }
+    return tarifColors.Rouge;
+  }
+}
 
-// blueOfferConditions.push(
-//   (age, agePermis, accidentNumber, seniority) =>
-//     isSeniorityUpper5(seniority) &&
-//     greenOfferConditions.some((condition) =>
-//       condition(age, agePermis, accidentNumber, seniority)
-//     )
-// );
+export class OrangeOffer implements IOffreAssurance {
+  driverAge: number;
+  licenseAge: number;
+  accidentNumber: number;
+  fidelity: number;
 
-export const redOffer = createOffer(
-  "Rouge",
-  redOfferConditions,
-  shouldSwitchToBetterOffer
-);
-export const orangeOffer = createOffer(
-  "Orange",
-  orangeOfferConditions,
-  shouldSwitchToBetterOffer
-);
-export const greenOffer = createOffer(
-  "Vert",
-  greenOfferConditions,
-  shouldSwitchToBetterOffer
-);
-export const blueOffer = createOffer(
-  "Bleu",
-  blueOfferConditions,
-  shouldSwitchToBetterOffer
-);
+  constructor(
+    driverAge: number,
+    licenseAge: number,
+    accidentNumber: number,
+    fidelity: number
+  ) {
+    this.driverAge = driverAge;
+    this.licenseAge = licenseAge;
+    this.accidentNumber = accidentNumber;
+    this.fidelity = fidelity;
+  }
+
+  active(): boolean {
+    if (
+      (this.accidentNumber === 0 &&
+        this.driverAge < 25 &&
+        this.licenseAge > 2) ||
+      (this.driverAge > 25 && this.licenseAge < 2) ||
+      (this.accidentNumber === 1 && this.driverAge > 25 && this.licenseAge > 2)
+    ) {
+      return true;
+    }
+    return false;
+  }
+  calculerTarif(): string {
+    if (this.fidelity > 5) {
+      return tarifColors.Vert;
+    }
+    return tarifColors.Orange;
+  }
+}
+
+export class GreenOffer implements IOffreAssurance {
+  driverAge: number;
+  licenseAge: number;
+  accidentNumber: number;
+  fidelity: number;
+
+  constructor(
+    driverAge: number,
+    licenseAge: number,
+    accidentNumber: number,
+    fidelity: number
+  ) {
+    this.driverAge = driverAge;
+    this.licenseAge = licenseAge;
+    this.accidentNumber = accidentNumber;
+    this.fidelity = fidelity;
+  }
+
+  active(): boolean {
+    if (
+      this.driverAge > 25 &&
+      this.licenseAge > 2 &&
+      this.accidentNumber === 0
+    ) {
+      return true;
+    }
+    return false;
+  }
+  calculerTarif(): string {
+    if (this.fidelity > 5) {
+      return tarifColors.Bleu;
+    }
+    return tarifColors.Vert;
+  }
+}
+
+export class OffreManager {
+  private offers: IOffreAssurance[];
+  private offer: IOffreAssurance;
+
+  constructor(driverAge, licenseAge, accidentNumber, fidelity) {
+    this.offers = [
+      new RedOffer(driverAge, licenseAge, accidentNumber, fidelity),
+      new OrangeOffer(driverAge, licenseAge, accidentNumber, fidelity),
+      new GreenOffer(driverAge, licenseAge, accidentNumber, fidelity),
+      new Refuse(driverAge, licenseAge, accidentNumber, fidelity),
+    ];
+
+    for (let offer of this.offers) {
+      if (offer.active()) {
+        this.offer = offer;
+        break;
+      }
+    }
+  }
+
+  calculerTarif(): string {
+    if (this.offer) {
+      console.log(this.offer);
+      return this.offer.calculerTarif();
+    }
+    return tarifColors.Refuse;
+  }
+}
